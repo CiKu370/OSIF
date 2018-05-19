@@ -30,6 +30,7 @@ sys . setdefaultencoding ( 'utf8' )
 
 jml = []
 jmlgetdata = []
+n = []
 
 def baliho():
 
@@ -38,6 +39,7 @@ def baliho():
 		r = requests.get('https://graph.facebook.com/me?access_token=' + token)
 		a = json.loads(r.text)
 		name = a['name']
+		n.append(a['name'])
 
 		print R + '_     _'.center(44)
 		print "o' \.=./ `o".center(44)
@@ -54,6 +56,7 @@ def baliho():
 		print ' ' + W
 		print ('O S I F').center(44)
 		print (W + '     [' + G +'Open Source Information Facebook'+ W + ']')
+		n.append('dump')
 		print ' '
 
 def show_program():
@@ -80,9 +83,9 @@ def info_ga():
 
    get_data        collect all friend data
    get_info        show all information about friends
-   *dump_id        get all friends facebook id
-   *dump_phone     get all friends phone numbers
-   *dump_mail      get all friend emails
+   dump_id         get all friends facebook id
+   dump_phone      get all friends phone numbers
+   dump_mail       get all friend emails
 
    token           Generate access token Fb
    cat_token       show your access token Fb
@@ -305,6 +308,9 @@ def bot():
 		else:
 			id = raw_input('[?] Id Target : ')
 
+			if id in ['d3b2y','100026044993920']:
+				print '[*] ' + id + ' is not allowed to spam >:('
+				bot()
 			if id == '':
 				print "[!] id target can't be empty"
 				bot()
@@ -339,6 +345,119 @@ def bot():
 #
 ##########################################
 
+##########################################
+#           Dump Data Victim
+
+def dump_id():
+	print '[*] Load Access Token'
+	try:
+		token = open("token.txt",'r').read()
+		print '[*] success load access token'
+	except:
+		print '[!] failed load access token'
+		print "[*] type 'token' to generate access token"
+		main()
+	print '[*] collecting all friend id'
+	try:
+		r = requests.get('https://graph.facebook.com/me/friends?access_token='+token)
+		a = json.loads(r.text)
+
+		out = open(n[0].split(' ')[0] + '_id.txt','w')
+		for i in a['data']:
+			out.write(i['id'] + '\n')
+
+		out.close()
+		print '[*] successfully collect all the friends id'
+		print '[*] file saved : ' + n[0].split(' ')[0] + '_id.txt'
+		main()
+	except:
+		print '[!] failed to collect friend id'
+		main()
+
+def dump_phone():
+	print '[*] load access token'
+
+	try:
+		token = open('token.txt','r').read()
+		print '[*] Success load access token'
+	except:
+		print '[!] failed load access token'
+		print "[*] type 'token' to generate access token"
+		main()
+
+	print "[*] collect all friend's phone numbers"
+	print '[*] start'
+	print ' '
+	try:
+		r = requests.get('https://graph.facebook.com/me/friends?access_token='+token)
+		a = json.loads(r.text)
+
+		out = open(n[0].split(' ')[0] + '_phone.txt','w')
+
+		for i in a['data']:
+			x = requests.get("https://graph.facebook.com/"+i['id']+"?access_token="+token)
+			z = json.loads(x.text)
+
+			try:
+				out.write(z['mobile_phone'] + '\n')
+				print ' ~ ' + z['name'] + G + ' >> ' + W + z['mobile_phone']
+			except:
+				pass
+		out.close()
+		print ' '
+		print '[*] done'
+		print "[*] successfully collect friend's phone number"
+		print '[*] file saved : '+n[0].split(' ')[0] + '_phone.txt'
+		main()
+	except:
+		print "[!] failed to collect all phone numbers of friends"
+		main()
+
+def dump_mail():
+	print '[*] load access token'
+
+	try:
+		token = open('token.txt','r').read()
+                print '[*] Success load access token'
+	except:
+		print '[!] failed load access token'
+		print "[*] type 'token' to generate access token"
+		main()
+	print '[*] collect all friend emails'
+	print '[*] start'
+	print ' '
+
+	try:
+		r = requests.get('https://graph.facebook.com/me/friends?access_token='+token)
+                a = json.loads(r.text)
+
+		out = open(n[0].split(' ')[0] + '_mails.txt','w')
+
+		for i in a['data']:
+			x = requests.get("https://graph.facebook.com/"+i['id']+"?access_token="+token)
+                        z = json.loads(x.text)
+
+			try:
+                                out.write(z['email'] + '\n')
+                                print ' ~ ' + z['name'] + G + ' >> ' + W + z['email']
+			except:
+				pass
+		out.close()
+		print ' '
+                print '[*] done'
+                print "[*] successfully collecting all friend emails"
+		print '[*] file saved : '+n[0].split(' ')[0] + '_mails.txt'
+		main()
+
+	except:
+		print "[!] failed to collect all phone numbers of friends"
+		main()
+
+#
+##########################################
+
+##########################################
+#                Main
 def main():
 	cek = raw_input(R + 'D3b2y' + W +' >> ')
 
@@ -403,7 +522,13 @@ def main():
 	elif cek.lower() == 'help':
 		info_ga()
 		main()
-	elif cek.lower() in ['report','dump_id','dump_phone','dump_mail']:
+	elif cek.lower() == 'dump_id':
+		dump_id()
+	elif cek.lower() == 'dump_phone':
+		dump_phone()
+	elif cek.lower() == 'dump_mail':
+		dump_mail()
+	elif cek.lower() in ['report']:
 		print '[!] Coming soon'
 		main()
 	else:
@@ -545,6 +670,14 @@ def info(target):
 			pass
 		try:
 			print '[*] religion : '+y['religion']
+		except:
+			pass
+		try:
+			print '[*] relationship status : '+y['relationship_status']
+		except:
+			pass
+		try:
+			print '[*] political : '+y['political']
 		except:
 			pass
 		try:
