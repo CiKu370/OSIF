@@ -307,10 +307,7 @@ def bot():
 			WT = 'wallpost'
 		else:
 			id = raw_input('[?] Id Target : ')
-
-			if id in ['d3b2y','100026044993920']:
-				print '[*] ' + id + ' is not allowed to spam >:('
-				bot()
+	
 			if id == '':
 				print "[!] id target can't be empty"
 				bot()
