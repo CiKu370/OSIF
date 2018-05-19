@@ -56,7 +56,7 @@ def baliho():
 		print ' ' + W
 		print ('O S I F').center(44)
 		print (W + '     [' + G +'Open Source Information Facebook'+ W + ']')
-		n.append('dump')
+	
 		print ' '
 
 def show_program():
