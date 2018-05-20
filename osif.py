@@ -1,7 +1,5 @@
 import json , sys , random , hashlib , os
 
-
-
 ###################################
 if sys.platform == "linux" or sys.platform == "linux2":
 	W = "\033[0m"
@@ -18,7 +16,7 @@ try:
 except:
 	print R + '_     _'.center(44)
 	print "o' \.=./ `o".center(44)
-	print '(o o)'.center(44)
+	print (R + '                   (' + W + 'o o' + R + ')')
 	print 'ooO--(_)--Ooo'.center(44)
 	print W + ' '
 	print ('O S I F').center(44)
@@ -45,7 +43,7 @@ def baliho():
 
 		print R + '_     _'.center(44)
 		print "o' \.=./ `o".center(44)
-		print '(o o)'.center(44)
+		print (R + '                   (' + W + 'o o' + R + ')')
 		print 'ooO--(_)--Ooo'.center(44)
 		print ' ' + W
 		print ('[*] ' + name + ' [*]').center(44)
@@ -53,12 +51,11 @@ def baliho():
 	except:
 		print R + '_     _'.center(44)
 		print "o' \.=./ `o".center(44)
-		print '(o o)'.center(44)
+		print (R + '                   (' + W + 'o o' + R + ')')
 		print 'ooO--(_)--Ooo'.center(44)
 		print ' ' + W
 		print ('O S I F').center(44)
 		print (W + '     [' + G +'Open Source Information Facebook'+ W + ']')
-	
 		print ' '
 
 def show_program():
@@ -101,7 +98,7 @@ def info_ga():
    about           Show information about this program
    exit            exit the program
 
-   * : coming soon
+   * coming soon
 """
 
 def menu_bot():
@@ -176,25 +173,25 @@ def id():
 
                 # Execute  #
 
-def post():
-	global id , token , WT
+def post(id):
+	global token , WT
 
 	print '[*] Collecting Posts Id'
 	try:
 	  if WT == 'wallpost':
 		r = requests.get('https://graph.facebook.com/me/home?fields=id&limit=150&access_token=' + token)
-		result = json.loads(r.text)
+		wlpst = json.loads(r.text)
 
 		print '[*] Posts id successfully collected'
 		print '[*] Start'
-		return result['data']
+		return wlpst['data']
 	  else:
-		r = requests.get("https://graph.facebook.com/"+id+"/feed?limit=150&access_token="+token)
-		result = json.loads(r.text)
+		r = requests.get("https://graph.facebook.com/%s/feed?limit=150&access_token=%s"%(id,token))
+		trgt = json.loads(r.text)
 
 		print '[*] Posts id successfully collected'
 		print '[*] Start'
-		return result['data']
+		return trgt['data']
 	except:
 		print '[!] Failed To Collecting Posts Id'
 		bot()
@@ -269,7 +266,7 @@ def comment():
 	else:
 		WT = 'wallpost'
 
-	like(post(),150)
+	like(post(id),150)
 
 def bot():
 	global type , message , WT , token
@@ -309,12 +306,10 @@ def bot():
 			WT = 'wallpost'
 		else:
 			id = raw_input('[?] Id Target : ')
-	
+
 			if id == '':
 				print "[!] id target can't be empty"
 				bot()
-			else:
-				pass
 
 		print '--------------------------------------------------'
 		print "  [Note] Use the '</>' symbol to change the line\n"
@@ -325,7 +320,7 @@ def bot():
 		else:
 			message = message.replace('</>','\n')
 
-		cmnt(post(),150)
+		cmnt(post(id),150)
 
 	elif cek == '0':
 		print '[*] Back to main menu'
@@ -361,11 +356,11 @@ def dump_id():
 		r = requests.get('https://graph.facebook.com/me/friends?access_token='+token)
 		a = json.loads(r.text)
 
-		out = open(n[0].split(' ')[0] + '_id.txt','w')
+		out_id = open(n[0].split(' ')[0] + '_id.txt','w')
 		for i in a['data']:
-			out.write(i['id'] + '\n')
+			out_id.write(i['id'] + '\n')
 
-		out.close()
+		out_id.close()
 		print '[*] successfully collect all the friends id'
 		print '[*] file saved : ' + n[0].split(' ')[0] + '_id.txt'
 		main()
@@ -391,18 +386,18 @@ def dump_phone():
 		r = requests.get('https://graph.facebook.com/me/friends?access_token='+token)
 		a = json.loads(r.text)
 
-		out = open(n[0].split(' ')[0] + '_phone.txt','w')
+		out_phone = open(n[0].split(' ')[0] + '_phone.txt','w')
 
 		for i in a['data']:
 			x = requests.get("https://graph.facebook.com/"+i['id']+"?access_token="+token)
 			z = json.loads(x.text)
 
 			try:
-				out.write(z['mobile_phone'] + '\n')
+				out_phone.write(z['mobile_phone'] + '\n')
 				print ' ~ ' + z['name'] + G + ' >> ' + W + z['mobile_phone']
 			except:
 				pass
-		out.close()
+		out_phone.close()
 		print ' '
 		print '[*] done'
 		print "[*] successfully collect friend's phone number"
@@ -430,18 +425,18 @@ def dump_mail():
 		r = requests.get('https://graph.facebook.com/me/friends?access_token='+token)
                 a = json.loads(r.text)
 
-		out = open(n[0].split(' ')[0] + '_mails.txt','w')
+		out_mail = open(n[0].split(' ')[0] + '_mails.txt','w')
 
 		for i in a['data']:
 			x = requests.get("https://graph.facebook.com/"+i['id']+"?access_token="+token)
                         z = json.loads(x.text)
 
 			try:
-                                out.write(z['email'] + '\n')
+                                out_mail.write(z['email'] + '\n')
                                 print ' ~ ' + z['name'] + G + ' >> ' + W + z['email']
 			except:
 				pass
-		out.close()
+		out_mail.close()
 		print ' '
                 print '[*] done'
                 print "[*] successfully collecting all friend emails"
@@ -449,7 +444,7 @@ def dump_mail():
 		main()
 
 	except:
-		print "[!] failed to collect all emails of friends"
+		print "[!] failed to collect all phone numbers of friends"
 		main()
 
 #
@@ -514,10 +509,13 @@ def main():
 		show_program()
 		main()
 	elif cek.lower() == 'exit':
+		if sys.platform == 'win32':
+			os.system('cls')
+		else:
+			os.system('clear')
+		baliho()
 		print '[!] exit the program'
-		while True:
-			os.system('exit')
-			os.sys.exit()
+		os.sys.exit()
 	elif cek.lower() == 'help':
 		info_ga()
 		main()
@@ -596,9 +594,6 @@ def search():
 
 	if target == '':
 		print "[!] name or id can't be empty"
-		search()
-	elif target.lower() in ['putriy.kaeysha','d3b2y','bintari.s.rini','bintari.styo','bintari.setyo.9']:
-		print '[!] ' + target + ' is not allowed to be searched'
 		search()
 	else:
 		info(target)
