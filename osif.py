@@ -1,6 +1,6 @@
 import json , sys , random , hashlib , os
 
-from report import *
+
 
 ###################################
 if sys.platform == "linux" or sys.platform == "linux2":
