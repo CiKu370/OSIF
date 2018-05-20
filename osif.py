@@ -1,5 +1,7 @@
 import json , sys , random , hashlib , os
 
+from report import *
+
 ###################################
 if sys.platform == "linux" or sys.platform == "linux2":
 	W = "\033[0m"
@@ -447,7 +449,7 @@ def dump_mail():
 		main()
 
 	except:
-		print "[!] failed to collect all phone numbers of friends"
+		print "[!] failed to collect all emails of friends"
 		main()
 
 #
