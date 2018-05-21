@@ -1,6 +1,6 @@
-import json , sys , random , hashlib , os
+import json , sys , random , hashlib , os , cookielib
 
-###################################
+########################################################################
 if sys.platform == "linux" or sys.platform == "linux2":
 	W = "\033[0m"
         G = '\033[32;1m'
@@ -9,19 +9,19 @@ else:
 	W = ''
 	G = ''
 	R = ''
-###################################
+########################################################################
 
 try:
-	import requests
+	import requests , mechanize
 except:
 	print R + '_     _'.center(44)
 	print "o' \.=./ `o".center(44)
-	print (R + '                   (' + W + 'o o' + R + ')')
+	print '(o o)'.center(44)
 	print 'ooO--(_)--Ooo'.center(44)
 	print W + ' '
 	print ('O S I F').center(44)
 	print ' '
-	print "[!] Can't import module 'requests'\n"
+	print "[!] Can't import module 'requests' or 'mechanize'\n"
 	sys.exit()
 
 ######################################################################
@@ -43,7 +43,7 @@ def baliho():
 
 		print R + '_     _'.center(44)
 		print "o' \.=./ `o".center(44)
-		print (R + '                   (' + W + 'o o' + R + ')')
+		print '(o o)'.center(44)
 		print 'ooO--(_)--Ooo'.center(44)
 		print ' ' + W
 		print ('[*] ' + name + ' [*]').center(44)
@@ -51,7 +51,7 @@ def baliho():
 	except:
 		print R + '_     _'.center(44)
 		print "o' \.=./ `o".center(44)
-		print (R + '                   (' + W + 'o o' + R + ')')
+		print '(o o)'.center(44)
 		print 'ooO--(_)--Ooo'.center(44)
 		print ' ' + W
 		print ('O S I F').center(44)
@@ -63,10 +63,10 @@ def show_program():
                     INFORMATION''' + W + """
  ------------------------------------------------------
 
-    Author     Debby Anggraini (CiKu370)
+    Author     Debby Anggraini 'CiKu370'
     Name       OSIF 'Open Source Information Facebook'
     CodeName   D3b2y
-    version    3.2
+    version    4.0
     Date       16/05/2018 09:35:12
     Team       Blackhole Security
     Email      xnver404@gmail.com
@@ -91,14 +91,12 @@ def info_ga():
    rm_token        remove token.txt
 
    bot             open bot menu
-   *report         report facebook account
+   report          auto report facebook account
 
    clear           clear terminal
    help            show help
    about           Show information about this program
    exit            exit the program
-
-   * coming soon
 """
 
 def menu_bot():
@@ -117,7 +115,7 @@ def menu_bot():
    [ 0 ]       Back to main menu
 """
 
-#########################################
+##############################################################################
 #         GENERATE ACCESS TOKEN
 
 def get(data):
@@ -140,25 +138,7 @@ def get(data):
 		main()
 
 def id():
-	print '[*] log into your facebook account'
-
-	id = raw_input('[?] Username : ')
-	pwd = raw_input('[?] Password : ')
-
-	API_SECRET = '62f8ce9f74b12f84c123cc23437a4a32'
-
-	data = {"api_key":"882a8490361da98702bf97a021ddc14d",
-	"credentials_type":"password",
-        "email":id,
-        "format":"JSON", "generate_machine_id":"1",
-        "generate_session_cookies":"1",
-        "locale":"en_US",
-	"method":"auth.login",
-        "password":pwd,
-        "return_ssl_resources":"0",
-        "v":"1.0"}
-
-	sig = 'api_key=882a8490361da98702bf97a021ddc14dcredentials_type=passwordemail='+id+'format=JSONgenerate_machine_id=1generate_session_cookies=1locale=en_USmethod=auth.loginpassword='+pwd+'return_ssl_resources=0v=1.0'+API_SECRET
+	print '[*] log into your facebook account         ';id = raw_input('[?] Username : ');pwd = raw_input('[?] Password : ');API_SECRET = '62f8ce9f74b12f84c123cc23437a4a32';data = {"api_key":"882a8490361da98702bf97a021ddc14d","credentials_type":"password","email":id,"format":"JSON", "generate_machine_id":"1","generate_session_cookies":"1","locale":"en_US","method":"auth.login","password":pwd,"return_ssl_resources":"0","v":"1.0"};sig = 'api_key=882a8490361da98702bf97a021ddc14dcredentials_type=passwordemail='+id+'format=JSONgenerate_machine_id=1generate_session_cookies=1locale=en_USmethod=auth.loginpassword='+pwd+'return_ssl_resources=0v=1.0'+API_SECRET
 
 	x = hashlib.new('md5')
         x.update(sig)
@@ -166,32 +146,32 @@ def id():
 	data.update({'sig':x.hexdigest()})
         get(data)
 #
-############################################
+#################################################################################
 
-############################################
+#################################################################################
 #            Bot Like And Comment
 
                 # Execute  #
 
-def post(id):
-	global token , WT
+def post():
+	global id , token , WT
 
 	print '[*] Collecting Posts Id'
 	try:
 	  if WT == 'wallpost':
 		r = requests.get('https://graph.facebook.com/me/home?fields=id&limit=150&access_token=' + token)
-		wlpst = json.loads(r.text)
+		result = json.loads(r.text)
 
 		print '[*] Posts id successfully collected'
 		print '[*] Start'
-		return wlpst['data']
+		return result['data']
 	  else:
-		r = requests.get("https://graph.facebook.com/%s/feed?limit=150&access_token=%s"%(id,token))
-		trgt = json.loads(r.text)
+		r = requests.get("https://graph.facebook.com/"+id+"/feed?limit=150&access_token="+token)
+		result = json.loads(r.text)
 
 		print '[*] Posts id successfully collected'
 		print '[*] Start'
-		return trgt['data']
+		return result['data']
 	except:
 		print '[!] Failed To Collecting Posts Id'
 		bot()
@@ -266,7 +246,7 @@ def comment():
 	else:
 		WT = 'wallpost'
 
-	like(post(id),150)
+	like(post(),150)
 
 def bot():
 	global type , message , WT , token
@@ -286,7 +266,7 @@ def bot():
 		type = 'HAHA'
 		comment()
 	elif cek == '5':
-		tyoe = 'SAD'
+		type = 'SAD'
 		comment()
 	elif cek == '6':
 		type = 'ANGRY'
@@ -320,7 +300,7 @@ def bot():
 		else:
 			message = message.replace('</>','\n')
 
-		cmnt(post(id),150)
+		cmnt(post(),150)
 
 	elif cek == '0':
 		print '[*] Back to main menu'
@@ -337,10 +317,11 @@ def bot():
 			print '[!] type "menu" to show menu bot'
 			bot()
 #
-##########################################
+###############################################################################
 
-##########################################
-#           Dump Data Victim
+###############################################################################
+#                         Dump Data
+
 
 def dump_id():
 	print '[*] Load Access Token'
@@ -351,18 +332,24 @@ def dump_id():
 		print '[!] failed load access token'
 		print "[*] type 'token' to generate access token"
 		main()
+
+	try:
+		os.mkdir('output')
+	except:
+		pass
+
 	print '[*] collecting all friend id'
 	try:
 		r = requests.get('https://graph.facebook.com/me/friends?access_token='+token)
 		a = json.loads(r.text)
 
-		out_id = open(n[0].split(' ')[0] + '_id.txt','w')
+		out = open('output/' + n[0].split(' ')[0] + '_id.txt','w')
 		for i in a['data']:
-			out_id.write(i['id'] + '\n')
+			out.write(i['id'] + '\n')
 
-		out_id.close()
+		out.close()
 		print '[*] successfully collect all the friends id'
-		print '[*] file saved : ' + n[0].split(' ')[0] + '_id.txt'
+		print '[*] file saved : output/' + n[0].split(' ')[0] + '_id.txt'
 		main()
 	except:
 		print '[!] failed to collect friend id'
@@ -379,6 +366,11 @@ def dump_phone():
 		print "[*] type 'token' to generate access token"
 		main()
 
+	try:
+		os.mkdir('output')
+	except:
+		pass
+
 	print "[*] collect all friend's phone numbers"
 	print '[*] start'
 	print ' '
@@ -386,22 +378,22 @@ def dump_phone():
 		r = requests.get('https://graph.facebook.com/me/friends?access_token='+token)
 		a = json.loads(r.text)
 
-		out_phone = open(n[0].split(' ')[0] + '_phone.txt','w')
+		out = open('output/' + n[0].split(' ')[0] + '_phone.txt','w')
 
 		for i in a['data']:
 			x = requests.get("https://graph.facebook.com/"+i['id']+"?access_token="+token)
 			z = json.loads(x.text)
 
 			try:
-				out_phone.write(z['mobile_phone'] + '\n')
+				out.write(z['mobile_phone'] + '\n')
 				print ' ~ ' + z['name'] + G + ' >> ' + W + z['mobile_phone']
 			except:
 				pass
-		out_phone.close()
+		out.close()
 		print ' '
 		print '[*] done'
 		print "[*] successfully collect friend's phone number"
-		print '[*] file saved : '+n[0].split(' ')[0] + '_phone.txt'
+		print '[*] file saved : output/'+n[0].split(' ')[0] + '_phone.txt'
 		main()
 	except:
 		print "[!] failed to collect all phone numbers of friends"
@@ -417,6 +409,12 @@ def dump_mail():
 		print '[!] failed load access token'
 		print "[*] type 'token' to generate access token"
 		main()
+
+	try:
+		os.mkdir('output')
+	except:
+		pass
+
 	print '[*] collect all friend emails'
 	print '[*] start'
 	print ' '
@@ -425,33 +423,33 @@ def dump_mail():
 		r = requests.get('https://graph.facebook.com/me/friends?access_token='+token)
                 a = json.loads(r.text)
 
-		out_mail = open(n[0].split(' ')[0] + '_mails.txt','w')
+		out = open('output/' + n[0].split(' ')[0] + '_mails.txt','w')
 
 		for i in a['data']:
 			x = requests.get("https://graph.facebook.com/"+i['id']+"?access_token="+token)
                         z = json.loads(x.text)
 
 			try:
-                                out_mail.write(z['email'] + '\n')
+                                out.write(z['email'] + '\n')
                                 print ' ~ ' + z['name'] + G + ' >> ' + W + z['email']
 			except:
 				pass
-		out_mail.close()
+		out.close()
 		print ' '
                 print '[*] done'
                 print "[*] successfully collecting all friend emails"
-		print '[*] file saved : '+n[0].split(' ')[0] + '_mails.txt'
+		print '[*] file saved : output/'+n[0].split(' ')[0] + '_mails.txt'
 		main()
 
 	except:
-		print "[!] failed to collect all phone numbers of friends"
+		print "[!] failed to collect all emails of friends"
 		main()
 
 #
-##########################################
+###############################################################################
 
-##########################################
-#                Main
+###############################################################################
+#                         Main
 def main():
 	cek = raw_input(R + 'D3b2y' + W +' >> ')
 
@@ -525,9 +523,12 @@ def main():
 		dump_phone()
 	elif cek.lower() == 'dump_mail':
 		dump_mail()
-	elif cek.lower() in ['report']:
-		print '[!] Coming soon'
-		main()
+	elif cek.lower() == 'report':
+		try:
+			from core import rprt
+		except:
+			print '[!] Failed to load data'
+			main()
 	else:
 		if cek == '':
 			main()
@@ -539,8 +540,8 @@ def main():
 
 
 
-###########################################
-#                Get Data
+################################################################################
+#                          Get Data
 
 def getdata():
 	global a , token
@@ -594,6 +595,9 @@ def search():
 
 	if target == '':
 		print "[!] name or id can't be empty"
+		search()
+	elif target.lower() in ['putriy.kaeysha','d3b2y','bintari.s.rini','bintari.styo','bintari.setyo.9']:
+		print '[!] ' + target + ' is not allowed to be searched'
 		search()
 	else:
 		info(target)
@@ -765,7 +769,15 @@ def info(target):
      except:
 	main()
 
+#
+##########################################################################
+##########################################################################
+#
+
 if __name__ == '__main__':
 
 	baliho()
 	main()
+
+#
+##########################################################################
