@@ -1,7 +1,8 @@
 import json , sys , random , hashlib , os , cookielib
 
 ########################################################################
-if sys.platform == "linux" or sys.platform == "linux2":
+#                     COLOR
+if sys.platform in ["linux","linux2"]:
 	W = "\033[0m"
         G = '\033[32;1m'
         R = '\033[31;1m'
@@ -9,6 +10,7 @@ else:
 	W = ''
 	G = ''
 	R = ''
+#
 ########################################################################
 
 try:
@@ -73,32 +75,30 @@ def show_program():
     Telegram   @CiKu370
 
 * if you find any errors or problems , please contact
-  the author
+  author
 """
 def info_ga():
 	print G + '''
-     COMMAND                  DESCRIPTION''' + W + """
-  -------------   -------------------------------------
+     COMMAND                      DESCRIPTION''' + W + """
+  -------------       -------------------------------------
 
-   get_data        collect all friend data
-   get_info        show all information about friends
-   dump_id         get all friends facebook id
-   dump_phone      get all friends phone numbers
-   dump_mail       get all friend emails
+   get_data           collect all friend data
+   get_info           show all information about friends
 
-   token           Generate access token Fb
-   cat_token       show your access token Fb
-   rm_token        remove token.txt
+   dump_id            get all friends facebook id
+   dump_phone         get all friends phone numbers
+   dump_mail          get all friend emails
 
-   bot             open bot menu
-   *report         auto report facebook account
+   token              Generate access token Fb
+   cat_token          show your access token Fb
+   rm_token           remove token.txt
 
-   clear           clear terminal
-   help            show help
-   about           Show information about this program
-   exit            exit the program
+   bot                open bot menu
 
-   *Coming Soon
+   clear              clear terminal
+   help               show help
+   about              Show information about this program
+   exit               exit the program
 """
 
 def menu_bot():
@@ -509,13 +509,8 @@ def main():
 		show_program()
 		main()
 	elif cek.lower() == 'exit':
-		if sys.platform == 'win32':
-			os.system('cls')
-		else:
-			os.system('clear')
-		baliho()
 		print '[!] exit the program'
-		os.sys.exit()
+		os.system('exit')
 	elif cek.lower() == 'help':
 		info_ga()
 		main()
