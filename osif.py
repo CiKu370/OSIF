@@ -91,12 +91,14 @@ def info_ga():
    rm_token        remove token.txt
 
    bot             open bot menu
-   report          auto report facebook account
+   *report         auto report facebook account
 
    clear           clear terminal
    help            show help
    about           Show information about this program
    exit            exit the program
+
+   *Coming Soon
 """
 
 def menu_bot():
@@ -524,11 +526,8 @@ def main():
 	elif cek.lower() == 'dump_mail':
 		dump_mail()
 	elif cek.lower() == 'report':
-		try:
-			from core import rprt
-		except:
-			print '[!] Failed to load data'
-			main()
+		print '[!] Coming soon'
+		main()
 	else:
 		if cek == '':
 			main()
