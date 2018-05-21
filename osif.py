@@ -14,7 +14,7 @@ else:
 ########################################################################
 
 try:
-	import requests , mechanize
+	import requests
 except:
 	print R + '_     _'.center(44)
 	print "o' \.=./ `o".center(44)
@@ -23,7 +23,7 @@ except:
 	print W + ' '
 	print ('O S I F').center(44)
 	print ' '
-	print "[!] Can't import module 'requests' or 'mechanize'\n"
+	print "[!] Can't import module 'requests'\n"
 	sys.exit()
 
 ######################################################################
@@ -118,7 +118,7 @@ def menu_bot():
 """
 
 ##############################################################################
-#         GENERATE ACCESS TOKEN
+#                     GENERATE ACCESS TOKEN
 
 def get(data):
 	print '[*] Generate access token '
