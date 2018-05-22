@@ -1,7 +1,7 @@
 import json , sys , random , hashlib , os , cookielib
 
 ########################################################################
-#                     COLOR
+#                             COLOR
 if sys.platform in ["linux","linux2"]:
 	W = "\033[0m"
         G = '\033[32;1m'
@@ -83,7 +83,8 @@ def info_ga():
   -------------       -------------------------------------
 
    get_data           collect all friend data
-   get_info           show all information about friends
+   get_info           show information about your friend
+   show_groups        show information about your group
 
    dump_id            get all friends facebook id
    dump_phone         get all friends phone numbers
@@ -281,7 +282,7 @@ def bot():
 		except:
 	                print '[!] Access token not found'
 			print "[!] type 'token' to generate access token"
-	                main()
+	                bot()
 
 		WT = raw_input(W + '[?] [' + R + 'W' + W + ']allpost or [' + R + 'T' + W + ']arget (' + R + 'W' + W + '/' + R + 'T' + W + ') : ')
 		if WT.lower() == "w":
@@ -298,7 +299,7 @@ def bot():
 
 		message = raw_input('[?] Your Message : ')
 		if message == '':
-			main()
+			message = 't.me/CiKu370'
 		else:
 			message = message.replace('</>','\n')
 
@@ -315,7 +316,7 @@ def bot():
 		if cek == '':
 			bot()
 		else:
-			print "[!] No command name '"+cek+"'"
+			print "[!] command '"+cek+"' not found"
 			print '[!] type "menu" to show menu bot'
 			bot()
 #
@@ -452,6 +453,7 @@ def dump_mail():
 
 ###############################################################################
 #                         Main
+
 def main():
 	cek = raw_input(R + 'D3b2y' + W +' >> ')
 
@@ -509,8 +511,9 @@ def main():
 		show_program()
 		main()
 	elif cek.lower() == 'exit':
-		print '[!] exit the program'
-		os.system('exit')
+		print "[!] command 'exit' not found"
+		print "[!] press 'CTRL+Z' to exit"
+		main()
 	elif cek.lower() == 'help':
 		info_ga()
 		main()
@@ -527,7 +530,7 @@ def main():
 		if cek == '':
 			main()
 		else:
-			print "[!] No command name '"+cek+"'"
+			print "[!] command '"+cek+"' not found"
 			print '[!] type "help" to show command'
 			main()
 
