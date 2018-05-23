@@ -1,4 +1,4 @@
-import json , sys , random , hashlib , os , cookielib
+import json , sys , hashlib , os
 
 ########################################################################
 #                             COLOR
@@ -99,7 +99,6 @@ def info_ga():
    clear              clear terminal
    help               show help
    about              Show information about this program
-   exit               exit the program
 """
 
 def menu_bot():
