@@ -84,7 +84,6 @@ def info_ga():
 
    get_data           collect all friend data
    get_info           show information about your friend
-   show_groups        show information about your group
 
    dump_id            get all friends facebook id
    dump_phone         get all friends phone numbers
