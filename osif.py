@@ -156,10 +156,10 @@ def id():
                 # Execute  #
 
 def post():
-	global id , token , WT
+	  global token , WT
 
-	print '[*] Collecting Posts Id'
-	try:
+	  print '[*] Collecting Posts Id'
+#	try:
 	  if WT == 'wallpost':
 		r = requests.get('https://graph.facebook.com/me/home?fields=id&limit=150&access_token=' + token)
 		result = json.loads(r.text)
@@ -168,15 +168,15 @@ def post():
 		print '[*] Start'
 		return result['data']
 	  else:
-		r = requests.get("https://graph.facebook.com/"+id+"/feed?limit=150&access_token="+token)
+		r = requests.get("https://graph.facebook.com/%s/feed?limit=150&access_token=%s"%(id,token))
 		result = json.loads(r.text)
 
 		print '[*] Posts id successfully collected'
 		print '[*] Start'
 		return result['data']
-	except:
-		print '[!] Failed To Collecting Posts Id'
-		bot()
+#	except:
+#		print '[!] Failed To Collecting Posts Id'
+#		bot()
 
 def like(posts , amount):
 	global type , token , WT
@@ -242,8 +242,6 @@ def comment():
 		if id == '':
 			print "[!] id target can't be empty"
 			bot()
-		else:
-			pass
 
 	else:
 		WT = 'wallpost'
@@ -251,7 +249,7 @@ def comment():
 	like(post(),150)
 
 def bot():
-	global type , message , WT , token
+	global type , message , id , WT , token
 
 	cek = raw_input(R + 'D3b2y' + W +'/' + R +'Bot ' + W + '>> ')
 
@@ -277,9 +275,9 @@ def bot():
 		print '[*] load access token '
 		try:
 			token = open('token.txt','r').read()
-	                print '[*] Success load access token'
+		        print '[*] Success load access token'
 		except:
-	                print '[!] Access token not found'
+	                print '[!] Failed load access token'
 			print "[!] type 'token' to generate access token"
 	                bot()
 
@@ -298,12 +296,11 @@ def bot():
 
 		message = raw_input('[?] Your Message : ')
 		if message == '':
-			message = 't.me/CiKu370'
+			message = '#bot\n\nhttps://github.com/ciku370'
 		else:
 			message = message.replace('</>','\n')
 
 		cmnt(post(),150)
-
 	elif cek == '0':
 		print '[*] Back to main menu'
 		main()
