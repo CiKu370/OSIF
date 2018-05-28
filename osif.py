@@ -15,7 +15,7 @@ else:
 
 try:
 	import requests
-except:
+except ImportError:
 	print R + '_     _'.center(44)
 	print "o' \.=./ `o".center(44)
 	print '(o o)'.center(44)
@@ -23,6 +23,7 @@ except:
 	print W + ' '
 	print ('O S I F').center(44)
 	print ' '
+	print '[!] Error'
 	print "[!] Can't import module 'requests'\n"
 	sys.exit()
 
@@ -50,7 +51,7 @@ def baliho():
 		print ' ' + W
 		print ('[*] ' + name + ' [*]').center(44)
 		print ' '
-	except:
+	except IOError:
 		print R + '_     _'.center(44)
 		print "o' \.=./ `o".center(44)
 		print '(o o)'.center(44)
@@ -98,6 +99,7 @@ def info_ga():
    clear              clear terminal
    help               show help
    about              Show information about this program
+   exit               Exit the program
 """
 
 def menu_bot():
@@ -133,7 +135,7 @@ def get(data):
 		print '[*] your access token stored in token.txt'
 
 		main()
-	except:
+	except KeyError:
 		print '[!] Failed to generate access token'
 		print '[!] Check your connection / email or password'
 		main()
@@ -155,10 +157,10 @@ def id():
                 # Execute  #
 
 def post():
-	  global token , WT
+	global token , WT
 
-	  print '[*] Collecting Posts Id'
-#	try:
+	print '[*] Collecting Posts Id'
+	try:
 	  if WT == 'wallpost':
 		r = requests.get('https://graph.facebook.com/me/home?fields=id&limit=150&access_token=' + token)
 		result = json.loads(r.text)
@@ -173,9 +175,9 @@ def post():
 		print '[*] Posts id successfully collected'
 		print '[*] Start'
 		return result['data']
-#	except:
-#		print '[!] Failed To Collecting Posts Id'
-#		bot()
+	except:
+		print '[!] Failed To Collecting Posts Id'
+		bot()
 
 def like(posts , amount):
 	global type , token , WT
@@ -197,6 +199,10 @@ def like(posts , amount):
 
 			print W + '[' + G + id + W + '] successfully liked'
 		print '[*] Done'
+		bot()
+	except KeyboardInterrupt:
+		print '\n[!] CTRL + C detected'
+		print '[*] Stopped'
 		bot()
 	except:
 		bot()
@@ -220,6 +226,9 @@ def cmnt(posts , amount):
 			print W + '[' + G + id + W + '] successfully commented'
 		print '[*] Done'
 		bot()
+	except KeyboardInterrupt:
+                print '\n[!] CTRL + C detected'
+                print '[*] Stopped'
 	except:
 		bot()
 def comment():
@@ -229,7 +238,7 @@ def comment():
 	try:
 		token = open('token.txt','r').read()
 		print '[*] Success load access token'
-	except:
+	except IOError:
 		print '[!] Failed load access token'
 		print "[!] type 'token' to generate access token"
 		bot()
@@ -275,7 +284,7 @@ def bot():
 		try:
 			token = open('token.txt','r').read()
 		        print '[*] Success load access token'
-		except:
+		except IOError:
 	                print '[!] Failed load access token'
 			print "[!] type 'token' to generate access token"
 	                bot()
@@ -322,22 +331,24 @@ def bot():
 
 
 def dump_id():
+
 	print '[*] Load Access Token'
 	try:
 		token = open("token.txt",'r').read()
 		print '[*] success load access token'
-	except:
+	except IOError:
 		print '[!] failed load access token'
 		print "[*] type 'token' to generate access token"
 		main()
 
 	try:
 		os.mkdir('output')
-	except:
+	except OSError:
 		pass
 
 	print '[*] collecting all friend id'
 	try:
+
 		r = requests.get('https://graph.facebook.com/me/friends?access_token='+token)
 		a = json.loads(r.text)
 
@@ -349,7 +360,12 @@ def dump_id():
 		print '[*] successfully collect all the friends id'
 		print '[*] file saved : output/' + n[0].split(' ')[0] + '_id.txt'
 		main()
-	except:
+
+	except KeyboardInterrupt:
+		print '[!] CTRL + C detected'
+		print '[!] Stopped'
+		main()
+	except KeyError:
 		print '[!] failed to collect friend id'
 		main()
 
@@ -359,14 +375,14 @@ def dump_phone():
 	try:
 		token = open('token.txt','r').read()
 		print '[*] Success load access token'
-	except:
+	except IOError:
 		print '[!] failed load access token'
 		print "[*] type 'token' to generate access token"
 		main()
 
 	try:
 		os.mkdir('output')
-	except:
+	except OSError:
 		pass
 
 	print "[*] collect all friend's phone numbers"
@@ -393,7 +409,11 @@ def dump_phone():
 		print "[*] successfully collect friend's phone number"
 		print '[*] file saved : output/'+n[0].split(' ')[0] + '_phone.txt'
 		main()
-	except:
+	except KeyboardInterrupt:
+		print '[!] CTRL + C detected'
+		print '[!] Stopped'
+		main()
+	except KeyError:
 		print "[!] failed to collect all phone numbers of friends"
 		main()
 
@@ -403,14 +423,14 @@ def dump_mail():
 	try:
 		token = open('token.txt','r').read()
                 print '[*] Success load access token'
-	except:
+	except IOError:
 		print '[!] failed load access token'
 		print "[*] type 'token' to generate access token"
 		main()
 
 	try:
 		os.mkdir('output')
-	except:
+	except OSError:
 		pass
 
 	print '[*] collect all friend emails'
@@ -439,7 +459,11 @@ def dump_mail():
 		print '[*] file saved : output/'+n[0].split(' ')[0] + '_mails.txt'
 		main()
 
-	except:
+	except KeyboardInterrupt:
+		print '[!] CTRL + C detected'
+		print '[!] Stopped'
+		main()
+	except KeyError:
 		print "[!] failed to collect all emails of friends"
 		main()
 
@@ -465,7 +489,7 @@ def main():
 			o = open('token.txt','r').read()
 			print '[*] Your access token !!\n\n' + o + '\n'
 			main()
-		except:
+		except IOError:
 			print '[!] failed to open token.txt'
 			print "[!] type 'token' to generate access token"
 			main()
@@ -496,7 +520,7 @@ def main():
 				os.system('rm -rf token.txt')
 				print '[*] Success delete token.txt'
 				main()
-			except:
+			except OSError:
 				print '[*] failed to delete token.txt'
 				main()
 		else:
@@ -506,9 +530,8 @@ def main():
 		show_program()
 		main()
 	elif cek.lower() == 'exit':
-		print "[!] command 'exit' not found"
-		print "[!] press 'CTRL+Z' to exit"
-		main()
+		print "[!] Exiting Program"
+		sys.exit()
 	elif cek.lower() == 'help':
 		info_ga()
 		main()
@@ -549,7 +572,7 @@ def getdata():
 	try:
 		token = open("token.txt","r").read()
 		print '[*] Success load access token'
-	except:
+	except IOError:
 		print '[!] failed to open token.txt'
 		print "[!] type 'token' to generate access token"
 		main()
@@ -558,25 +581,20 @@ def getdata():
 	try:
 		r = requests.get('https://graph.facebook.com/me/friends?access_token='+token)
 		a = json.loads(r.text)
-	except:
+	except KeyError:
 		print '[!] Your access token is expired'
 		print "[!] type 'token' to generate access token"
 		main()
 
-	try:
-		for i in a['data']:
-			jml.append(i['id'])
-	except:
-		print '[!] failed to collect friend data'
-		main()
+	for i in a['data']:
+		jml.append(i['id'])
 
 	print '[*] '+str(len(jml))+' data of friends successfully collected'
-	jmlgetdata.append("D3b2y")
 	main()
 
 def search():
 
-	if len(jmlgetdata) == 0:
+	if len(jml) == 0:
                 print "[!] no friend data in the database"
                 print '[!] please type "get_data" to collect friends data'
                 main()
@@ -773,3 +791,4 @@ if __name__ == '__main__':
 
 #
 ##########################################################################
+
