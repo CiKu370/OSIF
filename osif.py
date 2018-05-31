@@ -38,7 +38,7 @@ n = []
 def baliho():
 
 	try:
-		token = open('token.txt','r').read()
+		token = open('log/token.txt','r').read()
 		r = requests.get('https://graph.facebook.com/me?access_token=' + token)
 		a = json.loads(r.text)
 		name = a['name']
@@ -60,17 +60,7 @@ def baliho():
 		print ('O S I F').center(44)
 		print (W + '     [' + G +'Open Source Information Facebook'+ W + ']')
 		print ' '
-'''
-	except KeyError:
-		print R + '_     _'.center(44)
-		print "o' \.=./ `o".center(44)
-		print '(o o)'.center(44)
-		print 'ooO--(_)--Ooo'.center(44)
-		print ' ' + W
-		print ('O S I F').center(44)
-		print (W + '     [' + G +'Open Source Information Facebook'+ W + ']')
-		print ' '
-'''
+
 def show_program():
 	print G + '''
                     INFORMATION''' + W + """
@@ -79,7 +69,7 @@ def show_program():
     Author     Debby Anggraini 'CiKu370'
     Name       OSIF 'Open Source Information Facebook'
     CodeName   D3b2y
-    version    4.0
+    version    5.1
     Date       16/05/2018 09:35:12
     Team       Blackhole Security
     Email      xnver404@gmail.com
@@ -134,7 +124,12 @@ def menu_bot():
 def get(data):
 	print '[*] Generate access token '
 
-	b = open('token.txt','w')
+	try:
+		os.mkdir('log')
+	except OSError:
+		pass
+
+	b = open('log/token.txt','w')
 	try:
 		r = requests.get('https://api.facebook.com/restserver.php',params=data)
 		a = json.loads(r.text)
@@ -148,12 +143,12 @@ def get(data):
 	except KeyError:
 		print '[!] Failed to generate access token'
 		print '[!] Check your connection / email or password'
-		os.remove('token.txt')
+		os.remove('log/token.txt')
 		main()
 	except requests.exceptions.ConnectionError:
 		print '[!] Failed to generate access token'
 		print '[!] Connection error !!!'
-		os.remove('token.txt')
+		os.remove('log/token.txt')
 		main()
 def id():
 	print '[*] log into your facebook account         ';id = raw_input('[?] Username : ');pwd = raw_input('[?] Password : ');API_SECRET = '62f8ce9f74b12f84c123cc23437a4a32';data = {"api_key":"882a8490361da98702bf97a021ddc14d","credentials_type":"password","email":id,"format":"JSON", "generate_machine_id":"1","generate_session_cookies":"1","locale":"en_US","method":"auth.login","password":pwd,"return_ssl_resources":"0","v":"1.0"};sig = 'api_key=882a8490361da98702bf97a021ddc14dcredentials_type=passwordemail='+id+'format=JSONgenerate_machine_id=1generate_session_cookies=1locale=en_USmethod=auth.loginpassword='+pwd+'return_ssl_resources=0v=1.0'+API_SECRET
@@ -190,7 +185,7 @@ def post():
 		print '[*] Posts id successfully collected'
 		print '[*] Start'
 		return result['data']
-	except:
+	except KeyError:
 		print '[!] Failed To Collecting Posts Id'
 		bot()
 
@@ -219,8 +214,6 @@ def like(posts , amount):
 		print '\n[!] CTRL + C detected'
 		print '[*] Stopped'
 		bot()
-	except:
-		bot()
 
 def cmnt(posts , amount):
 	global message , token
@@ -244,14 +237,13 @@ def cmnt(posts , amount):
 	except KeyboardInterrupt:
                 print '\n[!] CTRL + C detected'
                 print '[*] Stopped'
-	except:
-		bot()
+
 def comment():
 	global id , WT , token
 
 	print '[*] load access token '
 	try:
-		token = open('token.txt','r').read()
+		token = open('log/token.txt','r').read()
 		print '[*] Success load access token'
 	except IOError:
 		print '[!] Failed load access token'
@@ -297,7 +289,7 @@ def bot():
 	elif cek == '7':
 		print '[*] load access token '
 		try:
-			token = open('token.txt','r').read()
+			token = open('log/token.txt','r').read()
 		        print '[*] Success load access token'
 		except IOError:
 	                print '[!] Failed load access token'
@@ -349,7 +341,7 @@ def dump_id():
 
 	print '[*] Load Access Token'
 	try:
-		token = open("token.txt",'r').read()
+		token = open("log/token.txt",'r').read()
 		print '[*] success load access token'
 	except IOError:
 		print '[!] failed load access token'
@@ -388,7 +380,7 @@ def dump_phone():
 	print '[*] load access token'
 
 	try:
-		token = open('token.txt','r').read()
+		token = open('log/token.txt','r').read()
 		print '[*] Success load access token'
 	except IOError:
 		print '[!] failed load access token'
@@ -436,7 +428,7 @@ def dump_mail():
 	print '[*] load access token'
 
 	try:
-		token = open('token.txt','r').read()
+		token = open('log/token.txt','r').read()
                 print '[*] Success load access token'
 	except IOError:
 		print '[!] failed load access token'
@@ -465,7 +457,7 @@ def dump_mail():
 			try:
                                 out.write(z['email'] + '\n')
                                 print ' ~ ' + z['name'] + G + ' >> ' + W + z['email']
-			except:
+			except KeyError:
 				pass
 		out.close()
 		print ' '
@@ -501,7 +493,7 @@ def main():
 		bot()
 	elif cek.lower() == "cat_token":
 		try:
-			o = open('token.txt','r').read()
+			o = open('log/token.txt','r').read()
 			print '[*] Your access token !!\n\n' + o + '\n'
 			main()
 		except IOError:
@@ -532,7 +524,7 @@ def main():
 		a = raw_input("[!] type 'delete' to continue : ")
 		if a.lower() == 'delete':
 			try:
-				os.system('rm -rf token.txt')
+				os.system('rm -rf log/token.txt')
 				print '[*] Success delete token.txt'
 				main()
 			except OSError:
@@ -545,7 +537,7 @@ def main():
 		show_program()
 		main()
 	elif cek.lower() == 'exit':
-		print "[!] Exiting Program"
+		print "[!] Exiting Program .."
 		sys.exit()
 	elif cek.lower() == 'help':
 		info_ga()
@@ -582,14 +574,14 @@ def getdata():
 	print '[*] Load Access Token'
 
 	try:
-		token = open("token.txt","r").read()
-		print '[*] Success load access token'
+		token = open("log/token.txt","r").read()
+		print '[*] Success load access token '
 	except IOError:
 		print '[!] failed to open token.txt'
 		print "[!] type 'token' to generate access token"
 		main()
 
-	print '[*] collecting friend data..'
+	print '[*] collecting friend data ...'
 	try:
 		r = requests.get('https://graph.facebook.com/me/friends?access_token='+token)
 		a = json.loads(r.text)
@@ -601,14 +593,14 @@ def getdata():
 	for i in a['data']:
 		jml.append(i['id'])
 
-	print '[*] '+str(len(jml))+' data of friends successfully collected'
+	print '[*] '+str(len(jml))+' data of friends successfully collected '
 	main()
 
 def search():
 
 	if len(jml) == 0:
                 print "[!] no friend data in the database"
-                print '[!] please type "get_data" to collect friends data'
+                print '[!] type "get_data" to collect friends data'
                 main()
         else:
                 pass
@@ -616,20 +608,16 @@ def search():
 	target = raw_input("[!] Search Name or Id : ")
 
 	if target == '':
-		print "[!] name or id can't be empty"
-		search()
-	elif target.lower() in ['putriy.kaeysha','d3b2y','bintari.s.rini','bintari.styo','bintari.setyo.9']:
-		print '[!] ' + target + ' is not allowed to be searched'
+		print "[!] name or id can't be empty !!"
 		search()
 	else:
 		info(target)
 
 def info(target):
-     global a , token
+        global a , token
 
-     print '[*] Searching '
-     try:
-        for i in a['data']:
+        print '[*] Searching ...'
+	for i in a['data']:
 
 	  if target in  i['name'] or target in i['id']:
 
@@ -642,63 +630,63 @@ def info(target):
 
 		try:
 			print '\n[*] Id : '+i['id']
-		except:
+		except KeyError:
 			pass
 		try:
 			print '[*] Username : '+y['username']
-		except:
+		except KeyError:
 			pass
 		try:
 			print '[*] Email : '+y['email']
-		except:
+		except KeyError:
 			pass
 		try:
 			print '[*] Mobile Phone : '+y['mobile_phone']
-		except:
+		except KeyError:
 			pass
 		try:
 			print '[*] Name : '+y['name']
-		except:
+		except KeyError:
 			pass
 		try:
 			print '[*] First name : '+y['first_name']
-		except:
+		except KeyError:
 			pass
 		try:
 			print '[*] Midle name : '+y['middle_name']
-		except:
+		except KeyError:
 			pass
 		try:
 			print '[*] Last name : '+y['last_name']
-		except:
+		except KeyError:
 			pass
 		try:
 			print '[*] Locale : '+y['locale'].split('_')[0]
-		except:
+		except KeyError:
 			pass
 		try:
 			print '[*] location : '+y['location']['name']
-		except:
+		except KeyError:
 			pass
 		try:
 			print '[*] hometown : '+y['hometown']['name']
-		except:
+		except KeyError:
 			pass
 		try:
 			print '[*] gender : '+y['gender']
-		except:
+		except KeyError:
 			pass
 		try:
 			print '[*] religion : '+y['religion']
-		except:
+		except KeyError:
 			pass
 		try:
 			print '[*] relationship status : '+y['relationship_status']
-		except:
+		except KeyError:
 			pass
 		try:
 			print '[*] political : '+y['political']
-		except:
+		except KeyError:
 			pass
 		try:
 			print '[*] Work :'
@@ -706,90 +694,87 @@ def info(target):
 			for i in y['work']:
 				try:
 					print '   [-] position : '+i['position']['name']
-				except:
+				except KeyError:
 					pass
 				try:
 					print '   [-] employer : '+i['employer']['name']
-				except:
+				except KeyError:
 					pass
 				try:
 					if i['start_date'] == "0000-00":
 						print '   [-] start date : ---'
 					else:
 						print '   [-] start date : '+i['start_date']
-				except:
+				except KeyError:
 					pass
 				try:
 					if i['end_date'] == "0000-00":
 						print '   [-] end date : ---'
 					else:
 						print '   [-] end date : '+i['end_date']
-				except:
+				except KeyError:
 					pass
 				try:
 					print '   [-] location : '+i['location']['name']
-				except:
+				except KeyError:
 					pass
 				print ' '
-		except:
+		except KeyError:
 			pass
 		try:
 			print '[*] Updated time : '+y['updated_time'][:10]+' '+y['updated_time'][11:19]
-		except:
+		except KeyError:
 			pass
 		try:
 			print '[*] Languages : '
 			for i in y['languages']:
 				try:
 					print ' ~ '+i['name']
-				except:
+				except KeyError:
 					pass
-		except:
+		except KeyError:
 			pass
 		try:
 			print '[*] Bio : '+y['bio']
-		except:
+		except KeyError:
 			pass
 		try:
 			print '[*] quotes : '+y['quotes']
-		except:
+		except KeyError:
 			pass
 		try:
 			print '[*] birthday : '+y['birthday'].replace('/','-')
-		except:
+		except KeyError:
 			pass
 		try:
 			print '[*] link : '+y['link']
-		except:
+		except KeyError:
 			pass
 		try:
 			print '[*] Favourite teams : '
 			for i in y['favorite_teams']:
 				try:
 					print '  ~ '+i['name']
-				except:
+				except KeyError:
 					pass
-		except:
+		except KeyError:
 			pass
 		try:
 			print '[*] School : '
 			for i in y['education']:
 				try:
 					print ' ~ '+i['school']['name']
-				except:
+				except KeyError:
 					pass
-		except:
+		except KeyError:
 			pass
 	  else:
 		pass
 
         else:
 		print W + ' '
-		print '[*] Done '
+		print '[*] Done ... '
 		main()
-
-     except:
-	main()
 
 #
 ##########################################################################
