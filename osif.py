@@ -1,7 +1,4 @@
 import json , sys , hashlib , os , random
-from time import gmtime, strftime
-
-date = strftime("%Y-%m-%d %H:%M:%S", gmtime())
 
 ########################################################################
 #                             COLOR
