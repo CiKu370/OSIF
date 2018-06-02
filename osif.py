@@ -1,4 +1,7 @@
-import json , sys , hashlib , os
+import json , sys , hashlib , os , random
+from time import gmtime, strftime
+
+date = strftime("%Y-%m-%d %H:%M:%S", gmtime())
 
 ########################################################################
 #                             COLOR
@@ -36,9 +39,8 @@ jmlgetdata = []
 n = []
 
 def baliho():
-
 	try:
-		token = open('log/token.txt','r').read()
+		token = open('cookie/token.log','r').read()
 		r = requests.get('https://graph.facebook.com/me?access_token=' + token)
 		a = json.loads(r.text)
 		name = a['name']
@@ -92,7 +94,7 @@ def info_ga():
 
    token              Generate access token Fb
    cat_token          show your access token Fb
-   rm_token           remove token.txt
+   rm_token           remove access token
 
    bot                open bot menu
 
@@ -125,11 +127,11 @@ def get(data):
 	print '[*] Generate access token '
 
 	try:
-		os.mkdir('log')
+		os.mkdir('cookie')
 	except OSError:
 		pass
 
-	b = open('log/token.txt','w')
+	b = open('cookie/token.log','w')
 	try:
 		r = requests.get('https://api.facebook.com/restserver.php',params=data)
 		a = json.loads(r.text)
@@ -137,18 +139,18 @@ def get(data):
 		b.write(a['access_token'])
 		b.close()
 		print '[*] Success creates an access token'
-		print '[*] your access token stored in token.txt'
+		print '[*] your access token stored in cookie/token.log'
 
 		main()
 	except KeyError:
 		print '[!] Failed to generate access token'
 		print '[!] Check your connection / email or password'
-		os.remove('log/token.txt')
+		os.remove('cookie/token.log')
 		main()
 	except requests.exceptions.ConnectionError:
 		print '[!] Failed to generate access token'
 		print '[!] Connection error !!!'
-		os.remove('log/token.txt')
+		os.remove('cookie/token.log')
 		main()
 def id():
 	print '[*] log into your facebook account         ';id = raw_input('[?] Username : ');pwd = raw_input('[?] Password : ');API_SECRET = '62f8ce9f74b12f84c123cc23437a4a32';data = {"api_key":"882a8490361da98702bf97a021ddc14d","credentials_type":"password","email":id,"format":"JSON", "generate_machine_id":"1","generate_session_cookies":"1","locale":"en_US","method":"auth.login","password":pwd,"return_ssl_resources":"0","v":"1.0"};sig = 'api_key=882a8490361da98702bf97a021ddc14dcredentials_type=passwordemail='+id+'format=JSONgenerate_machine_id=1generate_session_cookies=1locale=en_USmethod=auth.loginpassword='+pwd+'return_ssl_resources=0v=1.0'+API_SECRET
@@ -178,20 +180,24 @@ def post():
 		print '[*] Posts id successfully collected'
 		print '[*] Start'
 		return result['data']
+		exit()
 	  else:
-		r = requests.get("https://graph.facebook.com/%s/feed?limit=150&access_token=%s"%(id,token))
+		r = requests.get("https://graph.facebook.com/%s?fields=feed.limit(150)&access_token=%s"%(id,token))
 		result = json.loads(r.text)
 
 		print '[*] Posts id successfully collected'
 		print '[*] Start'
-		return result['data']
+		return result['feed']['data']
 	except KeyError:
 		print '[!] Failed To Collecting Posts Id'
+		print '[!] Stopped'
 		bot()
-
+	except requests.exceptions.ConnectionError:
+		print '[!] Connection Error'
+		print '[!] Stopped'
+		bot()
 def like(posts , amount):
 	global type , token , WT
-
 	try:
 		counter = 0
 		for post in posts:
@@ -207,7 +213,13 @@ def like(posts , amount):
 
 			id = post['id'].split('_')[0]
 
-			print W + '[' + G + id + W + '] successfully liked'
+			try:
+				print W + '[' + G + id + W + '] ' + post['message'][:40].replace('\n',' ') + '...'
+			except KeyError:
+				try:
+					print W + '[' + G + id + W + '] ' + post['story'].replace('\n',' ')
+				except KeyError:
+					print W + '[' + G + id + W + '] Successfully liked'
 		print '[*] Done'
 		bot()
 	except KeyboardInterrupt:
@@ -215,7 +227,7 @@ def like(posts , amount):
 		print '[*] Stopped'
 		bot()
 
-def cmnt(posts , amount):
+def comment(posts , amount):
 	global message , token
 	try:
 		counter = 0
@@ -231,19 +243,25 @@ def cmnt(posts , amount):
 
 			id = post['id'].split('_')[0]
 
-			print W + '[' + G + id + W + '] successfully commented'
+			try:
+				print W + '[' + G + id + W + '] ' +post['message'][:40].replace('\n',' ') + '...'
+			except KeyError:
+				try:
+					print W + '[' + G + id + W + '] ' + post['story'].replace('\n',' ')
+				except KeyError:
+					print W + '[' + G + id + W + '] successfully commented'
 		print '[*] Done'
 		bot()
 	except KeyboardInterrupt:
                 print '\n[!] CTRL + C detected'
                 print '[*] Stopped'
 
-def comment():
+def bot_ask():
 	global id , WT , token
 
 	print '[*] load access token '
 	try:
-		token = open('log/token.txt','r').read()
+		token = open('cookie/token.log','r').read()
 		print '[*] Success load access token'
 	except IOError:
 		print '[!] Failed load access token'
@@ -270,26 +288,26 @@ def bot():
 
 	if cek == '1':
 		type = "LIKE"
-		comment()
+		bot_ask()
 	elif cek == "2":
 		type = "LOVE"
-		comment()
+		bot_ask()
 	elif cek == "3":
 		type = "WOW"
-		comment()
+		bot_ask()
 	elif cek == "4":
 		type = 'HAHA'
-		comment()
+		bot_ask()
 	elif cek == '5':
 		type = 'SAD'
-		comment()
+		bot_ask()
 	elif cek == '6':
 		type = 'ANGRY'
-		comment()
+		bot_ask()
 	elif cek == '7':
-		print '[*] load access token '
+		print '[*] load access token'
 		try:
-			token = open('log/token.txt','r').read()
+			token = open('cookie/token.log','r').read()
 		        print '[*] Success load access token'
 		except IOError:
 	                print '[!] Failed load access token'
@@ -297,7 +315,7 @@ def bot():
 	                bot()
 
 		WT = raw_input(W + '[?] [' + R + 'W' + W + ']allpost or [' + R + 'T' + W + ']arget (' + R + 'W' + W + '/' + R + 'T' + W + ') : ')
-		if WT.lower() == "w":
+		if WT.lower() == "w" or WT.lower() == '':
 			WT = 'wallpost'
 		else:
 			id = raw_input('[?] Id Target : ')
@@ -311,18 +329,21 @@ def bot():
 
 		message = raw_input('[?] Your Message : ')
 		if message == '':
-			message = '#bot\n\nhttps://github.com/ciku370'
+			print "[!] Message can't be emty"
+			bot()
 		else:
 			message = message.replace('</>','\n')
 
-		cmnt(post(),150)
+		comment(post(),150)
 	elif cek == '0':
 		print '[*] Back to main menu'
 		main()
 	elif cek.lower() == 'menu':
 		menu_bot()
 		bot()
-
+	elif cek.lower() == 'exit':
+		print '[!] Exiting program'
+		sys.exit()
 	else:
 		if cek == '':
 			bot()
@@ -341,7 +362,7 @@ def dump_id():
 
 	print '[*] Load Access Token'
 	try:
-		token = open("log/token.txt",'r').read()
+		token = open("cookie/token.log",'r').read()
 		print '[*] success load access token'
 	except IOError:
 		print '[!] failed load access token'
@@ -380,7 +401,7 @@ def dump_phone():
 	print '[*] load access token'
 
 	try:
-		token = open('log/token.txt','r').read()
+		token = open('cookie/token.log','r').read()
 		print '[*] Success load access token'
 	except IOError:
 		print '[!] failed load access token'
@@ -408,7 +429,7 @@ def dump_phone():
 			try:
 				out.write(z['mobile_phone'] + '\n')
 				print ' ~ ' + z['name'] + G + ' >> ' + W + z['mobile_phone']
-			except:
+			except KeyError:
 				pass
 		out.close()
 		print ' '
@@ -428,7 +449,7 @@ def dump_mail():
 	print '[*] load access token'
 
 	try:
-		token = open('log/token.txt','r').read()
+		token = open('cookie/token.log','r').read()
                 print '[*] Success load access token'
 	except IOError:
 		print '[!] failed load access token'
@@ -493,11 +514,12 @@ def main():
 		bot()
 	elif cek.lower() == "cat_token":
 		try:
-			o = open('log/token.txt','r').read()
+			o = open('cookie/token.log','r').read()
 			print '[*] Your access token !!\n\n' + o + '\n'
+			print "[Tips] don't show your access token to anyone"
 			main()
 		except IOError:
-			print '[!] failed to open token.txt'
+			print '[!] failed to open cookie/token.log'
 			print "[!] type 'token' to generate access token"
 			main()
 
@@ -519,25 +541,25 @@ def main():
 	elif cek.lower() == 'rm_token':
 		print '''
 [Warn] you must create access token again if 
-       your token.txt is deleted
+       your access token is deleted
 '''
 		a = raw_input("[!] type 'delete' to continue : ")
 		if a.lower() == 'delete':
 			try:
-				os.system('rm -rf log/token.txt')
-				print '[*] Success delete token.txt'
+				os.system('rm -rf cookie/token.log')
+				print '[*] Success delete cookie/token.log'
 				main()
 			except OSError:
-				print '[*] failed to delete token.txt'
+				print '[*] failed to delete cookie/token.log'
 				main()
 		else:
-			print '[*] failed to delete token.txt'
+			print '[*] failed to delete cookie/token.log'
 			main()
 	elif cek.lower() == 'about':
 		show_program()
 		main()
 	elif cek.lower() == 'exit':
-		print "[!] Exiting Program .."
+		print "[!] Exiting Program"
 		sys.exit()
 	elif cek.lower() == 'help':
 		info_ga()
@@ -574,10 +596,10 @@ def getdata():
 	print '[*] Load Access Token'
 
 	try:
-		token = open("log/token.txt","r").read()
+		token = open("cookie/token.log","r").read()
 		print '[*] Success load access token '
 	except IOError:
-		print '[!] failed to open token.txt'
+		print '[!] failed to open cookie/token.log'
 		print "[!] type 'token' to generate access token"
 		main()
 
