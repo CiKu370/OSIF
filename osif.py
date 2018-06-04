@@ -23,7 +23,6 @@ except ImportError:
 	print W + ' '
 	print ('O S I F').center(44)
 	print ' '
-	print '[!] Error'
 	print "[!] Can't import module 'requests'\n"
 	sys.exit()
 
@@ -82,12 +81,12 @@ def info_ga():
      COMMAND                      DESCRIPTION''' + W + """
   -------------       -------------------------------------
 
-   get_data           collect all friend data
+   get_data           fetching all friends data
    get_info           show information about your friend
 
-   dump_id            get all friends facebook id
-   dump_phone         get all friends phone numbers
-   dump_mail          get all friend emails
+   dump_id            fetching all id from friend list
+   dump_phone         fetching all phone number from friend list
+   dump_mail          fetching all emails from friend list
 
    token              Generate access token Fb
    cat_token          show your access token Fb
@@ -106,13 +105,13 @@ def menu_bot():
    Number                  INFO ''' + W + """
  ---------   ------------------------------------
 
-   [ 1 ]       Like All Post
+   [ 1 ]       like all posts
    [ 2 ]       React all post with emoji 'Love'
    [ 3 ]       React all post with emoji 'Wow'
    [ 4 ]       React all post with emoji 'Haha'
    [ 5 ]       React all post with emoji 'Sad'
    [ 6 ]       React all post with emoji "Angry'
-   [ 7 ]       Comment all post
+   [ 7 ]       Comment all posts
 
    [ 0 ]       Back to main menu
 """
@@ -135,9 +134,8 @@ def get(data):
 
 		b.write(a['access_token'])
 		b.close()
-		print '[*] Success creates an access token'
-		print '[*] your access token stored in cookie/token.log'
-
+		print '[*] successfully generate access token'
+		print '[*] Your access token is stored in cookie / token.log'
 		main()
 	except KeyError:
 		print '[!] Failed to generate access token'
@@ -150,7 +148,7 @@ def get(data):
 		os.remove('cookie/token.log')
 		main()
 def id():
-	print '[*] log into your facebook account         ';id = raw_input('[?] Username : ');pwd = raw_input('[?] Password : ');API_SECRET = '62f8ce9f74b12f84c123cc23437a4a32';data = {"api_key":"882a8490361da98702bf97a021ddc14d","credentials_type":"password","email":id,"format":"JSON", "generate_machine_id":"1","generate_session_cookies":"1","locale":"en_US","method":"auth.login","password":pwd,"return_ssl_resources":"0","v":"1.0"};sig = 'api_key=882a8490361da98702bf97a021ddc14dcredentials_type=passwordemail='+id+'format=JSONgenerate_machine_id=1generate_session_cookies=1locale=en_USmethod=auth.loginpassword='+pwd+'return_ssl_resources=0v=1.0'+API_SECRET
+	print '[*] login to your facebook account         ';id = raw_input('[?] Username : ');pwd = raw_input('[?] Password : ');API_SECRET = '62f8ce9f74b12f84c123cc23437a4a32';data = {"api_key":"882a8490361da98702bf97a021ddc14d","credentials_type":"password","email":id,"format":"JSON", "generate_machine_id":"1","generate_session_cookies":"1","locale":"en_US","method":"auth.login","password":pwd,"return_ssl_resources":"0","v":"1.0"};sig = 'api_key=882a8490361da98702bf97a021ddc14dcredentials_type=passwordemail='+id+'format=JSONgenerate_machine_id=1generate_session_cookies=1locale=en_USmethod=auth.loginpassword='+pwd+'return_ssl_resources=0v=1.0'+API_SECRET
 
 	x = hashlib.new('md5')
         x.update(sig)
@@ -168,13 +166,13 @@ def id():
 def post():
 	global token , WT
 
-	print '[*] Collecting Posts Id'
+	print '[*] fetching all posts id'
 	try:
 	  if WT == 'wallpost':
 		r = requests.get('https://graph.facebook.com/me/home?fields=id&limit=150&access_token=' + token)
 		result = json.loads(r.text)
 
-		print '[*] Posts id successfully collected'
+		print '[*] all post id successfully retrieved'
 		print '[*] Start'
 		return result['data']
 		exit()
@@ -182,17 +180,18 @@ def post():
 		r = requests.get("https://graph.facebook.com/%s?fields=feed.limit(150)&access_token=%s"%(id,token))
 		result = json.loads(r.text)
 
-		print '[*] Posts id successfully collected'
+		print '[*] all post id successfully retrieved'
 		print '[*] Start'
 		return result['feed']['data']
 	except KeyError:
-		print '[!] Failed To Collecting Posts Id'
+		print '[!] failed to retrieve all post id'
 		print '[!] Stopped'
 		bot()
 	except requests.exceptions.ConnectionError:
 		print '[!] Connection Error'
 		print '[!] Stopped'
 		bot()
+
 def like(posts , amount):
 	global type , token , WT
 	try:
@@ -220,8 +219,7 @@ def like(posts , amount):
 		print '[*] Done'
 		bot()
 	except KeyboardInterrupt:
-		print '\n[!] CTRL + C detected'
-		print '[*] Stopped'
+		print '\r[!] Stopped'
 		bot()
 
 def comment(posts , amount):
@@ -250,8 +248,8 @@ def comment(posts , amount):
 		print '[*] Done'
 		bot()
 	except KeyboardInterrupt:
-                print '\n[!] CTRL + C detected'
-                print '[*] Stopped'
+                print '\r[!] Stopped'
+		bot()
 
 def bot_ask():
 	global id , WT , token
@@ -279,6 +277,7 @@ def bot_ask():
 	like(post(),150)
 
 def bot():
+  try:
 	global type , message , id , WT , token
 
 	cek = raw_input(R + 'D3b2y' + W +'/' + R +'Bot ' + W + '>> ')
@@ -348,6 +347,8 @@ def bot():
 			print "[!] command '"+cek+"' not found"
 			print '[!] type "menu" to show menu bot'
 			bot()
+  except KeyboardInterrupt:
+	bot()
 #
 ###############################################################################
 
@@ -371,7 +372,7 @@ def dump_id():
 	except OSError:
 		pass
 
-	print '[*] collecting all friend id'
+	print '[*] fetching all friends id'
 	try:
 
 		r = requests.get('https://graph.facebook.com/me/friends?access_token='+token)
@@ -382,16 +383,15 @@ def dump_id():
 			out.write(i['id'] + '\n')
 
 		out.close()
-		print '[*] successfully collect all the friends id'
+		print '[*] all friends id successfuly retreived'
 		print '[*] file saved : output/' + n[0].split(' ')[0] + '_id.txt'
 		main()
 
 	except KeyboardInterrupt:
-		print '[!] CTRL + C detected'
-		print '[!] Stopped'
+		print '\r[!] Stopped'
 		main()
 	except KeyError:
-		print '[!] failed to collect friend id'
+		print '[!] failed to fetch friend id'
 		main()
 
 def dump_phone():
@@ -410,9 +410,9 @@ def dump_phone():
 	except OSError:
 		pass
 
-	print "[*] collect all friend's phone numbers"
-	print '[*] start'
-	print ' '
+	print "[*] fetching all phone numbers"
+	print '[*] start\n'
+
 	try:
 		r = requests.get('https://graph.facebook.com/me/friends?access_token='+token)
 		a = json.loads(r.text)
@@ -431,15 +431,14 @@ def dump_phone():
 		out.close()
 		print ' '
 		print '[*] done'
-		print "[*] successfully collect friend's phone number"
+		print "[*] all phone numbers successfuly retrieved"
 		print '[*] file saved : output/'+n[0].split(' ')[0] + '_phone.txt'
 		main()
 	except KeyboardInterrupt:
-		print '[!] CTRL + C detected'
-		print '[!] Stopped'
+		print '\r[!] Stopped'
 		main()
 	except KeyError:
-		print "[!] failed to collect all phone numbers of friends"
+		print "[!] failed to fetch all phone numbers"
 		main()
 
 def dump_mail():
@@ -458,9 +457,8 @@ def dump_mail():
 	except OSError:
 		pass
 
-	print '[*] collect all friend emails'
-	print '[*] start'
-	print ' '
+	print '[*] fetching all emails'
+	print '[*] start\n'
 
 	try:
 		r = requests.get('https://graph.facebook.com/me/friends?access_token='+token)
@@ -480,16 +478,15 @@ def dump_mail():
 		out.close()
 		print ' '
                 print '[*] done'
-                print "[*] successfully collecting all friend emails"
+                print "[*] all emails successfuly retrieved"
 		print '[*] file saved : output/'+n[0].split(' ')[0] + '_mails.txt'
 		main()
 
 	except KeyboardInterrupt:
-		print '[!] CTRL + C detected'
-		print '[!] Stopped'
+		print '\r[!] Stopped'
 		main()
 	except KeyError:
-		print "[!] failed to collect all emails of friends"
+		print "[!] failed to fetch all emails"
 		main()
 
 #
@@ -499,6 +496,7 @@ def dump_mail():
 #                         Main
 
 def main():
+  try:
 	cek = raw_input(R + 'D3b2y' + W +' >> ')
 
 	if cek.lower() == 'get_data':
@@ -513,7 +511,6 @@ def main():
 		try:
 			o = open('cookie/token.log','r').read()
 			print '[*] Your access token !!\n\n' + o + '\n'
-			print "[Tips] don't show your access token to anyone"
 			main()
 		except IOError:
 			print '[!] failed to open cookie/token.log'
@@ -574,9 +571,8 @@ def main():
 			print "[!] command '"+cek+"' not found"
 			print '[!] type "help" to show command'
 			main()
-
-
-
+  except KeyboardInterrupt:
+	main()
 
 ################################################################################
 #                          Get Data
