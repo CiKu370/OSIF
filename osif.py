@@ -1,4 +1,4 @@
-import json , sys , hashlib , os , random
+import json , sys , hashlib , os , time
 
 ########################################################################
 #                             COLOR
@@ -384,9 +384,10 @@ def dump_id():
 		out = open('output/' + n[0].split(' ')[0] + '_id.txt','w')
 		for i in a['data']:
 			out.write(i['id'] + '\n')
+			print '\r[*] %s retrieved'%(i['id']),;sys.stdout.flush();time.sleep(0.001)
 
 		out.close()
-		print '[*] all friends id successfuly retreived'
+		print '\r[*] all friends id successfuly retreived'
 		print '[*] file saved : output/' + n[0].split(' ')[0] + '_id.txt'
 		main()
 
@@ -503,7 +504,11 @@ def main():
 	cek = raw_input(R + 'D3b2y' + W +' >> ')
 
 	if cek.lower() == 'get_data':
-		getdata()
+		if len(jml) == 0:
+			getdata()
+		else:
+			print '[*] You have retrieved %s friends data'%(len(jml))
+			main()
 	elif cek.lower() == 'get_info':
 		print '\n'+'[*] Information Gathering [*]'.center(44) + '\n'
 		search()
@@ -583,12 +588,6 @@ def main():
 def getdata():
 	global a , token
 
-	if len(jmlgetdata) == 0:
-		pass
-	else:
-		print "[!] You have collected previous friends data"
-		main()
-
 	print '[*] Load Access Token'
 
 	try:
@@ -599,7 +598,7 @@ def getdata():
 		print "[!] type 'token' to generate access token"
 		main()
 
-	print '[*] collecting friend data ...'
+	print '[*] fetching all friends data'
 	try:
 		r = requests.get('https://graph.facebook.com/me/friends?access_token='+token)
 		a = json.loads(r.text)
@@ -610,8 +609,9 @@ def getdata():
 
 	for i in a['data']:
 		jml.append(i['id'])
+		print '\r[*] fetching %s data from friends'%(len(jml)),;sys.stdout.flush();time.sleep(0.001)
 
-	print '[*] '+str(len(jml))+' data of friends successfully collected '
+	print '\r[*] '+str(len(jml))+' data of friends successfully retrieved'
 	main()
 
 def search():
