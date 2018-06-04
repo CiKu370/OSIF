@@ -87,10 +87,6 @@ def info_ga():
    dump_id            fetching all id from friend list
    dump_phone         fetching all phone number from friend list
    dump_mail          fetching all emails from friend list
-   dump_<id>_<query>  fetching data from your friends <spesific>
-                      ex: dump_cvar1984.phtml_mail
-                          dump_cgi.izo_id
-                          dump_lexiie.ninetwo_phone
 
    token              Generate access token Fb
    cat_token          show your access token Fb
