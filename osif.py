@@ -87,6 +87,10 @@ def info_ga():
    dump_id            fetching all id from friend list
    dump_phone         fetching all phone number from friend list
    dump_mail          fetching all emails from friend list
+   dump_<id>_<query>  fetching data from your friends <spesific>
+                      ex: dump_cvar1984.phtml_mail
+                          dump_cgi.izo_id
+                          dump_lexiie.ninetwo_phone
 
    token              Generate access token Fb
    cat_token          show your access token Fb
@@ -172,16 +176,11 @@ def post():
 		r = requests.get('https://graph.facebook.com/me/home?fields=id&limit=150&access_token=' + token)
 		result = json.loads(r.text)
 
-		print '[*] all post id successfully retrieved'
-		print '[*] Start'
 		return result['data']
-		exit()
 	  else:
 		r = requests.get("https://graph.facebook.com/%s?fields=feed.limit(150)&access_token=%s"%(id,token))
 		result = json.loads(r.text)
 
-		print '[*] all post id successfully retrieved'
-		print '[*] Start'
 		return result['feed']['data']
 	except KeyError:
 		print '[!] failed to retrieve all post id'
@@ -194,6 +193,10 @@ def post():
 
 def like(posts , amount):
 	global type , token , WT
+
+	print '[*] All posts id successfuly retrieved'
+	print '[*] Start'
+
 	try:
 		counter = 0
 		for post in posts:
@@ -224,6 +227,10 @@ def like(posts , amount):
 
 def comment(posts , amount):
 	global message , token
+
+	print '[*] All posts id successfuly retrieved'
+	print '[*] Start'
+
 	try:
 		counter = 0
 		for post in posts:
