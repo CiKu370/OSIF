@@ -49,7 +49,7 @@ def baliho():
 		print ' ' + W
 		print ('[*] ' + name + ' [*]').center(44)
 		print ' '
-	except IOError:
+	except (IOError,KeyError):
 		print R + '_     _'.center(44)
 		print "o' \.=./ `o".center(44)
 		print '(o o)'.center(44)
