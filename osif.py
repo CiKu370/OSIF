@@ -27,13 +27,18 @@ except ImportError:
 	sys.exit()
 
 ######################################################################
+
 reload (sys)
 sys . setdefaultencoding ( 'utf8' )
+
+############################################################
 
 jml = []
 jmlgetdata = []
 n = []
 
+###########################################################
+#
 def baliho():
 	try:
 		token = open('cookie/token.log','r').read()
@@ -49,7 +54,7 @@ def baliho():
 		print ' ' + W
 		print ('[*] ' + name + ' [*]').center(44)
 		print ' '
-	except (IOError,KeyError):
+	except (KeyError,IOError):
 		print R + '_     _'.center(44)
 		print "o' \.=./ `o".center(44)
 		print '(o o)'.center(44)
@@ -58,7 +63,11 @@ def baliho():
 		print ('O S I F').center(44)
 		print (W + '     [' + G +'Open Source Information Facebook'+ W + ']')
 		print ' '
+#
+############################################################
 
+############################################################
+#		    Print In terminal
 def show_program():
 	print G + '''
                     INFORMATION''' + W + """
@@ -88,8 +97,8 @@ def info_ga():
    dump_phone         fetching all phone number from friend list
    dump_mail          fetching all emails from friend list
 
-   token              Generate access token Fb
-   cat_token          show your access token Fb
+   token              Generate access token
+   cat_token          show your access token
    rm_token           remove access token
 
    bot                open bot menu
@@ -115,8 +124,10 @@ def menu_bot():
 
    [ 0 ]       Back to main menu
 """
+#
+###########################################################
 
-##############################################################################
+###########################################################
 #                     GENERATE ACCESS TOKEN
 
 def get(data):
@@ -159,9 +170,9 @@ def id():
 #################################################################################
 
 #################################################################################
-#            Bot Like And Comment
+#       	     Bot Like And Comment
 
-                # Execute  #
+	                # Execute #
 
 def post():
 	global token , WT
@@ -169,10 +180,12 @@ def post():
 	print '[*] fetching all posts id'
 	try:
 	  if WT == 'wallpost':
-		r = requests.get('https://graph.facebook.com/me/home?fields=id&limit=150&access_token=' + token)
+
+		r = requests.get('https://graph.facebook.com/me?fields=home.limit(150)&access_token='+token)
 		result = json.loads(r.text)
 
-		return result['data']
+		return result['home']['data']
+
 	  else:
 		r = requests.get("https://graph.facebook.com/%s?fields=feed.limit(150)&access_token=%s"%(id,token))
 		result = json.loads(r.text)
@@ -253,7 +266,12 @@ def comment(posts , amount):
 	except KeyboardInterrupt:
                 print '\r[!] Stopped'
 		bot()
+#
+######################################################################################################################
 
+######################################################################################################################
+#			bot comment and like
+			   # Prepairing #
 def bot_ask():
 	global id , WT , token
 
@@ -272,6 +290,7 @@ def bot_ask():
 
 		if id == '':
 			print "[!] id target can't be empty"
+			print '[!] Stooped'
 			bot()
 
 	else:
@@ -321,6 +340,7 @@ def bot():
 
 			if id == '':
 				print "[!] id target can't be empty"
+				print '[!] Stopped'
 				bot()
 
 		print '--------------------------------------------------'
@@ -329,6 +349,7 @@ def bot():
 		message = raw_input('[?] Your Message : ')
 		if message == '':
 			print "[!] Message can't be emty"
+			print '[!] Stopped'
 			bot()
 		else:
 			message = message.replace('</>','\n')
@@ -357,7 +378,6 @@ def bot():
 
 ###############################################################################
 #                         Dump Data
-
 
 def dump_id():
 
@@ -396,6 +416,10 @@ def dump_id():
 		main()
 	except KeyError:
 		print '[!] failed to fetch friend id'
+		main()
+	except (requests.exceptions.ConnectionError , requests.exceptions.ChunkedEncodingError):
+		print '[!] Connection Error'
+		print '[!] Stopped'
 		main()
 
 def dump_phone():
@@ -443,6 +467,10 @@ def dump_phone():
 		main()
 	except KeyError:
 		print "[!] failed to fetch all phone numbers"
+		main()
+	except (requests.exceptions.ConnectionError , requests.exceptions.ChunkedEncodingError):
+		print '[!] Connection Error'
+		print '[!] Stopped'
 		main()
 
 def dump_mail():
@@ -492,7 +520,10 @@ def dump_mail():
 	except KeyError:
 		print "[!] failed to fetch all emails"
 		main()
-
+	except (requests.exceptions.ConnectionError , requests.exceptions.ChunkedEncodingError):
+		print '[!] Connection Error'
+		print '[!] Stopped'
+		main()
 #
 ###############################################################################
 
@@ -581,6 +612,8 @@ def main():
 			main()
   except KeyboardInterrupt:
 	main()
+#
+######################################################################################################################
 
 ################################################################################
 #                          Get Data
@@ -599,12 +632,19 @@ def getdata():
 		main()
 
 	print '[*] fetching all friends data'
+
 	try:
 		r = requests.get('https://graph.facebook.com/me/friends?access_token='+token)
 		a = json.loads(r.text)
+
 	except KeyError:
 		print '[!] Your access token is expired'
 		print "[!] type 'token' to generate access token"
+		main()
+
+	except requests.exceptions.ConnectionError:
+		print '[!] Connection Error'
+		print '[!] Stopped'
 		main()
 
 	for i in a['data']:
@@ -796,6 +836,7 @@ def info(target):
 
 #
 ##########################################################################
+
 ##########################################################################
 #
 
