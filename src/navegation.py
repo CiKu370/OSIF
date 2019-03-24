@@ -1,5 +1,5 @@
 from src.terminal import Terminal, CommandNotFoundException
-from src.actions import token, clear, exit_action, clear
+from src.actions import token, clear, exit_action, clear, fetch_friends
 from definitions import terminal, user_request_exit
 
 NAVEGATION_MENU_CONFIG = [
@@ -13,9 +13,10 @@ NAVEGATION_MENU_CONFIG = [
   {
     'title': '',
     'commands': [
-      {'dump:id': ['Fetch all id from friend list', None]},
-      {'dump:phone': ['Fetch all phone number from friend list', None]},
-      {'dump:mail': ['Fetch all emails from friend list', None]},
+      {'fetch:friends': ['Fetch all id from friend list', fetch_friends]},
+      {'fetch:ids': ['Fetch all id from friend list', None]},
+      {'fetch:phones': ['Fetch all phone number from friend list', None]},
+      {'fetch:mails': ['Fetch all emails from friend list', None]},
     ]
   },
   {

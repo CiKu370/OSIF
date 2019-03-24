@@ -1,6 +1,9 @@
 import sys, getpass, readline
 from enum import Enum
 
+reload(sys)
+sys.setdefaultencoding('UTF8')
+
 LOGO_WIDTH = 46
 
 class CommandNotFoundException(Exception):
@@ -68,7 +71,7 @@ class Terminal:
     self.message_type = message_type
   
   def run_command(self, navegation_menu):
-    command = self.read(message = '>>', message_type = Terminal.MessageType.LOG)
+    command = self.read(message = '>> ', message_type = Terminal.MessageType.LOG)
     try:
       navegation_menu.run_command(command, self)
     except CommandNotFoundException as ex:

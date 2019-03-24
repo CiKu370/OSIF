@@ -1,13 +1,12 @@
-import os
-from definitions import terminal, user_request_exit
-from src.api import Facebook
+import os, csv
+from definitions import terminal, user_request_exit, OUTPUT_CSVS_DIR
+from src.api import Facebook, BASE_URL as fb_base_url
+from src.util import write_directory
 
 fbApiInstance = Facebook()
 
-
 def token(terminal):
   fbApiInstance.login()
-  fbApiInstance.access_token()
   fbApiInstance.write_access_token()
 
 def clear(terminal):
@@ -16,3 +15,23 @@ def clear(terminal):
 def exit_action(terminal):
   clear(terminal)
   exit()
+
+
+def fetch_friends(terminal):
+  terminal.write('-'* 44)
+  try:
+    friends = fbApiInstance.get_friends()
+    with open('%s/friends.csv' % OUTPUT_CSVS_DIR, 'w') as f:
+      fieldnames = ['id', 'name', 'picture']
+      writer = csv.DictWriter(f, fieldnames=fieldnames, )
+      writer.writeheader()
+      for friend in friends:
+        picture = fbApiInstance.get_profile_picture(friend['id'])
+        row = { 'id': friend['id'], 'name': friend['name'], 'picture': picture }
+        terminal.write([row['id'], row['name']])
+        writer.writerow(row)
+      f.close()
+    terminal.write('%s friends found' % len(friends))
+  except IOError as ex:
+    terminal.write(str(ex))
+

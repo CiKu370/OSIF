@@ -1,6 +1,6 @@
-import requests, json, hashlib
+import requests, json, hashlib, time, simplejson, urllib, base64
 from src.util import write_directory, delete_file, relative_path, join_path
-from definitions import CONFIGURATION_DIR, COOKIES_DIR, terminal
+from definitions import CONFIGURATION_DIR, COOKIES_DIR, OUTPUT_REQUESTS_DIR, terminal
 from src.terminal import Terminal
 
 BASE_URL = 'https://graph.facebook.com'
@@ -29,9 +29,24 @@ BASE_DATA_LOGIN_REQUEST = {
 }
 BASE_SIGNATURE = 'api_key={0}credentials_type=passwordemail={1}format=JSONgenerate_machine_id=1generate_session_cookies=1locale=en_USmethod=auth.loginpassword={2}return_ssl_resources=0v=1.0{3}'
 
-
+class Request:
+	@staticmethod
+	def get(url):
+		response = requests.get(url)
+		text = response.text
+		file_name = join_path(OUTPUT_REQUESTS_DIR, 'get_request[%s].json' % time.time())
+		fr = open(file_name, 'w')
+		fr.write('{0}'.format(text))
+		fr.close()
+		try:
+			json_response = simplejson.loads(text, encoding='utf-8')
+			return json_response
+		except simplejson.errors.JSONDecodeError as ex:
+			terminal.write(str(ex))
+			return None
 class Facebook:
 	def login(self):
+		terminal.set_message_type(Terminal.MessageType.LOG)
 		terminal.write('[*] login to your facebook account         ')
 		self.id = terminal.read(message = '[?] Username | Email | Phone : ')
 		self.pwd = terminal.read(message = '[?] Password : ', hide_input = True)
@@ -72,14 +87,28 @@ class Facebook:
 			delete_file(PATH_COOKIE_ACCESS_TOKEN)
 
 	def access_token(self):
-		terminal.set_message_type(Terminal.MessageType.INFO)
-		terminal.write('[*] Load Access Token')
-		try:
-			token = open(PATH_COOKIE_ACCESS_TOKEN, 'r').read()
-			terminal.set_message_type(Terminal.MessageType.SUCCESS)
-			terminal.write('[*] success load access token')
-			terminal.set_message_type(Terminal.MessageType.LOG)
-		except IOError:
-			terminal.set_message_type(Terminal.MessageType.ERROR)
-			terminal.write('[!] failed load access token')
-			terminal.write('[*] type \'token\' to generate access token')
+		return open(PATH_COOKIE_ACCESS_TOKEN, 'r').read()
+	
+	def get_friends(self):
+		url = '%s/friends?access_token=%s' % (BASE_ME, self.access_token())
+		json_response = Request.get(url)
+		friends = json_response['data']
+		return friends
+	
+	def get_profile_data(self, profile_id):
+		url = '%s/%s?access_token=%s' % (BASE_URL, profile_id, self.access_token())
+		profile = Request.get(url)
+		return profile['data']
+	
+	def get_profile_of(self, profile_id):
+		url = '%s/%s/friends?access_token=%s' % (BASE_URL, profile_id, self.access_token())
+		profile = Request.get(url)
+		return profile['data']
+	
+	def get_profile_picture(self, profile_id):
+		url = '%s/%s/picture?access_token=%s&height=300' % (BASE_URL, profile_id, self.access_token())
+		contents = urllib.urlopen(url).read()
+		picture = base64.b64encode(contents)
+		return picture
+		
+	
