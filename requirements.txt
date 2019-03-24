@@ -1,2 +1,4 @@
 requests
 readline
+enum
+simplejson
