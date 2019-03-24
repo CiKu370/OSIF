@@ -105,3 +105,8 @@ venv.bak/
 
 # old script
 old_osif.py
+
+# not follow personal data
+cookie/
+output/
+configuration/**/*.json

@@ -1,4 +1,4 @@
-import requests, json, getpass, hashlib
+import requests, json, hashlib
 from src.util import write_directory, delete_file, relative_path, join_path
 from definitions import CONFIGURATION_DIR, COOKIES_DIR, terminal
 from src.terminal import Terminal
@@ -33,8 +33,8 @@ BASE_SIGNATURE = 'api_key={0}credentials_type=passwordemail={1}format=JSONgenera
 class Facebook:
 	def login(self):
 		terminal.write('[*] login to your facebook account         ')
-		self.id = terminal.read('[?] Username | Email | Phone : ')
-		self.pwd = getpass.getpass(terminal.message('[?] Password : '))
+		self.id = terminal.read(message = '[?] Username | Email | Phone : ')
+		self.pwd = terminal.read(message = '[?] Password : ', hide_input = True)
 		self.data = BASE_DATA_LOGIN_REQUEST
 		self.data['email'] = self.id
 		self.data['password'] = self.pwd
@@ -54,6 +54,7 @@ class Facebook:
 			b.close()
 			terminal.set_message_type(Terminal.MessageType.SUCCESS)
 			terminal.write('[*] Successfully generate access token')
+			terminal.set_message_type(Terminal.MessageType.LOG)
 			terminal.write('[*] Your access token is stored in ' + relative_path(PATH_COOKIE_ACCESS_TOKEN))
 			# success
 		except KeyError:
@@ -77,7 +78,7 @@ class Facebook:
 			token = open(PATH_COOKIE_ACCESS_TOKEN, 'r').read()
 			terminal.set_message_type(Terminal.MessageType.SUCCESS)
 			terminal.write('[*] success load access token')
-			terminal.write(token)
+			terminal.set_message_type(Terminal.MessageType.LOG)
 		except IOError:
 			terminal.set_message_type(Terminal.MessageType.ERROR)
 			terminal.write('[!] failed load access token')

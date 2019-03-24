@@ -1,11 +1,7 @@
-from definitions import define_directories
-from src.api import Facebook
-from src.messages import Message
+from definitions import define_directories, terminal, user_request_exit
+from src.navegation import navegation_menu
 
 define_directories()
 
-fbApiInstance = Facebook()
-
-fbApiInstance.login()
-fbApiInstance.access_token()
-fbApiInstance.write_access_token()
+while (not user_request_exit):
+  terminal.run_command(navegation_menu)

@@ -1,8 +1,12 @@
-import sys
+import sys, getpass, readline
 from enum import Enum
 
-LOGO_WIDTH = 44
+LOGO_WIDTH = 46
 
+class CommandNotFoundException(Exception):
+  def __init__(self, command_key):
+    msg = 'Command "%s" not found in the menu' % command_key
+    super(CommandNotFoundException, self).__init__(msg)
 class Terminal:
   class Color:
     WHITE = '\033[0m'
@@ -20,11 +24,28 @@ class Terminal:
 
   def __init__(self, *args, **kwargs):
     self.message_type = Terminal.MessageType.LOG
-
-  def set_message_type(self, message_type):
-    self.message_type = message_type
   
-  def print_logo(self, message = None, message_type = None):
+  def write(self, message, message_type = None):
+    print(self.message(message, message_type))
+  
+  def error(self, message):
+    self.message(message, Terminal.MessageType.ERROR)
+
+  def read(self, **kwargs):
+    message = kwargs.get('message')
+    message_type = kwargs.get('message_type')
+    hide_input = kwargs.get('hide_input')
+    if (hide_input):
+      raw = getpass.getpass(self.message(message, message_type))
+    else:
+      raw = raw_input(self.message(message, message_type))
+    return '{0}'.format(raw).strip()
+  
+  def clean(self, showLogo = False):
+    if(showLogo):
+      self.logo()
+  
+  def logo(self, message = None, message_type = None):
     print(Terminal.Color.RED)
     print ('_     _'.center(LOGO_WIDTH))
     print ("o' \.=./ `o".center(LOGO_WIDTH))
@@ -42,13 +63,17 @@ class Terminal:
     if (not message_type):
       message_type = self.message_type
     return '{0}{1}'.format(self.color(message_type), text)
-
   
-  def write(self, message, message_type = None):
-    print(self.message(message, message_type))
+  def set_message_type(self, message_type):
+    self.message_type = message_type
+  
+  def run_command(self, navegation_menu):
+    command = self.read(message = '>>', message_type = Terminal.MessageType.LOG)
+    try:
+      navegation_menu.run_command(command, self)
+    except CommandNotFoundException as ex:
+      self.write(self.error(str(ex)))
 
-  def read(self, message, message_type = None):
-    return raw_input(self.message(message, message_type))
 
   def color(self, message_type):
     color = ''
@@ -63,7 +88,6 @@ class Terminal:
     elif(message_type == Terminal.MessageType.LOG):
       color = Terminal.Color.WHITE
     return color
-
 
 if not sys.platform in ["linux","linux2"]:
   Terminal.Color.WHITE = ''

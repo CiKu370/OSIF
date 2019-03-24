@@ -1,6 +1,8 @@
-import os, readline
+import os
 from src.util import write_directory, join_path
 from src.terminal import Terminal
+
+user_request_exit = False
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 OUTPUT_DIR = join_path(ROOT_DIR, 'output')
@@ -13,4 +15,4 @@ def define_directories():
     write_directory(dir_path)
 
 terminal = Terminal()
-terminal.print_logo('Open Source Information Facebook')
+terminal.logo('Open Source Information Facebook')

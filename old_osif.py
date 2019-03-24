@@ -1,6 +1,6 @@
 ###################################################################
 #                        Import Module
-import json , sys , hashlib , os , time , marshal, getpass
+import json , sys , hashlib , os , time , marshal, getpass, readline
 ###################################################################
 '''
      Jangan Direcode ya bosku , tinggal make apa susahnya sih
