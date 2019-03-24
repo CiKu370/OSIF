@@ -61,7 +61,24 @@ class Terminal:
       # TODO: center the message
       message_to_print = '{0}[{1}{2}]'.format(Terminal.Color.WHITE, terminal_message, Terminal.Color.WHITE)
       print(message_to_print.center(LOGO_WIDTH))
+  def about(self):
+    self.write( '''
+                    %sINFORMATION%s
+ ------------------------------------------------------
 
+    Author     Debby Anggraini 'CiKu370'
+    Name       OSIF 'Open Source Information Facebook'
+    CodeName   D3b2y
+    version    full version
+    Date       16/05/2018 09:35:12
+    Team       Blackhole Security
+    Email      xnver404@gmail.com
+    Telegram   @CiKu370
+
+* if you find any errors or problems , please contact
+  author
+'''%(Terminal.Color.GREEN,Terminal.Color.WHITE))
+  
   def message(self, text, message_type = None):
     if (not message_type):
       message_type = self.message_type

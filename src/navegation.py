@@ -1,5 +1,5 @@
 from src.terminal import Terminal, CommandNotFoundException
-from src.actions import token, clear, exit_action, clear, fetch_friends
+from src.actions import token, clear, exit_action, clear, fetch_friends, about
 from definitions import terminal, user_request_exit
 
 NAVEGATION_MENU_CONFIG = [
@@ -38,7 +38,7 @@ NAVEGATION_MENU_CONFIG = [
     'commands': [
       {'clear': ['Clear terminal', clear]},
       {'help': ['Show commands description', None]},
-      {'about': ['Show information about this program', None]},
+      {'about': ['Show information about this program', about]},
       {'exit': ['Exit the program', None]},
     ]  
   }
@@ -103,7 +103,7 @@ class NavegationMenu:
 navegation_menu = NavegationMenu(menu=NAVEGATION_MENU_CONFIG)
 
 def help_func(terminal):
-  clear(terminal)
+  clear()
   terminal.logo()
   navegation_menu.display_menu(terminal)
 

@@ -9,13 +9,17 @@ def token(terminal):
   fbApiInstance.login()
   fbApiInstance.write_access_token()
 
-def clear(terminal):
+def clear():
   os.system('cls' if os.name=='nt' else 'clear')
 
-def exit_action(terminal):
-  clear(terminal)
-  exit()
+def about(terminal):
+  clear()
+  terminal.logo()
+  terminal.about()
 
+def exit_action(terminal):
+  clear()
+  exit()
 
 def fetch_friends(terminal):
   terminal.write('-'* 44)
