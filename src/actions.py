@@ -1,7 +1,7 @@
 import os, csv
 from definitions import terminal, user_request_exit, OUTPUT_CSVS_DIR
 from src.api import Facebook, BASE_URL as fb_base_url
-from src.util import write_directory
+from src.util import write_directory, relative_path
 
 fbApiInstance = Facebook()
 
@@ -9,16 +9,16 @@ def token(terminal):
   fbApiInstance.login()
   fbApiInstance.write_access_token()
 
-def clear():
+def clear(terminal):
   os.system('cls' if os.name=='nt' else 'clear')
 
 def about(terminal):
-  clear()
+  clear(terminal)
   terminal.logo()
   terminal.about()
 
 def exit_action(terminal):
-  clear()
+  clear(terminal)
   exit()
 
 def fetch_friends(terminal):
@@ -31,11 +31,12 @@ def fetch_friends(terminal):
       writer.writeheader()
       for friend in friends:
         picture = fbApiInstance.get_profile_picture(friend['id'])
-        row = { 'id': friend['id'], 'name': friend['name'], 'picture': picture }
+        row = { 'id': friend['id'], 'name': friend['name'], 'picture': picture.name }
         terminal.write([row['id'], row['name']])
         writer.writerow(row)
       f.close()
     terminal.write('%s friends found' % len(friends))
   except IOError as ex:
-    terminal.write(str(ex))
+    terminal.warning('Token not generated')
+    terminal.info('Eject "token" command to get it.')
 

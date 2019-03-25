@@ -1,5 +1,5 @@
 import requests, json, hashlib, time, simplejson, urllib, base64
-from src.util import write_directory, delete_file, relative_path, join_path
+from src.util import write_directory, delete_file, relative_path, join_path, write_photo
 from definitions import CONFIGURATION_DIR, COOKIES_DIR, OUTPUT_REQUESTS_DIR, terminal
 from src.terminal import Terminal
 
@@ -108,7 +108,8 @@ class Facebook:
 	def get_profile_picture(self, profile_id):
 		url = '%s/%s/picture?access_token=%s&height=300' % (BASE_URL, profile_id, self.access_token())
 		contents = urllib.urlopen(url).read()
-		picture = base64.b64encode(contents)
+		photo_data = base64.b64encode(contents)
+		picture = write_photo('%s.jpg' % profile_id, photo_data)
 		return picture
 		
 	

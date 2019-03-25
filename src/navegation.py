@@ -46,10 +46,9 @@ NAVEGATION_MENU_CONFIG = [
 
 class Command:
   def __init__(self, *args, **kwargs):
-    self.key = ''
-    self.description = ''
-    self.action = None
-
+    self.key = kwargs.get('key', '')
+    self.action = kwargs.get('action', None)
+    self.description = kwargs.get('decription','')
 
 class NavegationMenu:
   def __init__(self, *args, **kwargs):
@@ -59,19 +58,30 @@ class NavegationMenu:
     for group in self.menu:
       for command in group['commands']:
         c = Command()
-        c.key = dict.keys(command)[0]
+        c.key = list(command.keys())[0]
         c.description = command[c.key][0]
         c.action = command[c.key][1]
         self.commands.append(c)
 
   def command_keys(self):
     return map(lambda c: c.key, self.commands)
+
   def has_command(self, command_key):
     return any(map(lambda ck: ck == command_key, self.command_keys()))
   
   def find_command(self, command_key):
-    found = filter(lambda ck: ck.key == command_key, self.commands)
+    found = list(filter(lambda ck: ck.key == command_key, self.commands))
+    if(len(found) != 1):
+      return None
     return found[0]
+  
+  def set_command(self, command_key, action):
+    command = self.find_command(command_key)
+    if(not command):
+      command = Command(key=command_key, action=action)
+      self.commands.append(command)
+    else:
+      command.action = action
   
   def find_action(self, command_key):
     return self.find_command(command_key).action
@@ -86,7 +96,7 @@ class NavegationMenu:
         print('')
       for command in group['commands']:
         c = Command()
-        c.key = dict.keys(command)[0]
+        c.key = list(command.keys())[0]
         c.description = command[c.key][0]
 
         command_key = '  %s' % c.key
@@ -103,12 +113,12 @@ class NavegationMenu:
 navegation_menu = NavegationMenu(menu=NAVEGATION_MENU_CONFIG)
 
 def help_func(terminal):
-  clear()
+  clear(terminal)
   terminal.logo()
   navegation_menu.display_menu(terminal)
 
 help_action = lambda t: help_func(t)
 
-navegation_menu.find_command('help').action = help_action
-navegation_menu.find_command('exit').action = exit_action
+navegation_menu.set_command('help', help_action)
+navegation_menu.set_command('exit', exit_action) 
     

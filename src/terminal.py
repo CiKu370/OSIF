@@ -1,14 +1,13 @@
+# -*- coding: utf-8 -*-
 import sys, getpass, readline
 from enum import Enum
 
-reload(sys)
-sys.setdefaultencoding('UTF8')
 
 LOGO_WIDTH = 46
 
 class CommandNotFoundException(Exception):
   def __init__(self, command_key):
-    msg = 'Command "%s" not found in the menu' % command_key
+    msg = 'Command "%s" not found' % command_key
     super(CommandNotFoundException, self).__init__(msg)
 class Terminal:
   class Color:
@@ -32,16 +31,29 @@ class Terminal:
     print(self.message(message, message_type))
   
   def error(self, message):
-    self.message(message, Terminal.MessageType.ERROR)
+    self.write('[❌] %s' % message, Terminal.MessageType.ERROR)
+
+  def info(self, message):
+    self.write('[ⓘ] %s' % message, Terminal.MessageType.INFO)
+
+  def warning(self, message):
+    self.write('[%s] %s' % (chr(9888), message), Terminal.MessageType.WARNING)
+
+  def success(self, message):
+    self.write('[✔] %s' % message, Terminal.MessageType.SUCCESS)
 
   def read(self, **kwargs):
     message = kwargs.get('message')
     message_type = kwargs.get('message_type')
     hide_input = kwargs.get('hide_input')
+    message_text = self.message(message, message_type)
     if (hide_input):
-      raw = getpass.getpass(self.message(message, message_type))
+      raw = getpass.getpass(message_text)
     else:
-      raw = raw_input(self.message(message, message_type))
+      try:
+        raw = raw_input(message_text)
+      except NameError:
+        raw = input(message_text)
     return '{0}'.format(raw).strip()
   
   def clean(self, showLogo = False):
@@ -92,7 +104,7 @@ class Terminal:
     try:
       navegation_menu.run_command(command, self)
     except CommandNotFoundException as ex:
-      self.write(self.error(str(ex)))
+      self.error(str(ex))
 
 
   def color(self, message_type):
