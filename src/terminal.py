@@ -5,6 +5,17 @@ from enum import Enum
 
 LOGO_WIDTH = 46
 
+def separate_params(param):
+  param = str(param)
+  print(param)
+  key_value = param.split('=')
+  key = str(key_value[0]).replace('-', '', 1)
+  try:
+    value = str(key_value[1]).strip()
+  except IndexError:
+    value = None
+  return (key, value)
+
 class CommandNotFoundException(Exception):
   def __init__(self, command_key):
     msg = 'Command "%s" not found' % command_key
@@ -31,13 +42,13 @@ class Terminal:
     print(self.message(message, message_type))
   
   def error(self, message):
-    self.write('[❌] %s' % message, Terminal.MessageType.ERROR)
+    self.write('[x] %s' % message, Terminal.MessageType.ERROR)
 
   def info(self, message):
-    self.write('[ⓘ] %s' % message, Terminal.MessageType.INFO)
+    self.write('[i] %s' % message, Terminal.MessageType.INFO)
 
   def warning(self, message):
-    self.write('[%s] %s' % (chr(9888), message), Terminal.MessageType.WARNING)
+    self.write('[w] %s' % message, Terminal.MessageType.WARNING)
 
   def success(self, message):
     self.write('[✔] %s' % message, Terminal.MessageType.SUCCESS)
@@ -52,7 +63,7 @@ class Terminal:
     else:
       try:
         raw = raw_input(message_text)
-      except NameError:
+      except:
         raw = input(message_text)
     return '{0}'.format(raw).strip()
   
@@ -99,12 +110,27 @@ class Terminal:
   def set_message_type(self, message_type):
     self.message_type = message_type
   
+  def awaiting_for_command_message(self):
+    return '%sosif %s>> ' % (Terminal.Color.RED, Terminal.Color.WHITE)
+  
+  
+  
   def run_command(self, navegation_menu):
-    command = self.read(message = '>> ', message_type = Terminal.MessageType.LOG)
+    command_text = self.read_command()
+    params = None
+    if(self.command_has_params(command_text)):
+      params = dict(map(separate_params, command_text.split(' ')[1:]))
     try:
-      navegation_menu.run_command(command, self)
+      navegation_menu.run_command(command_text, params, self)
     except CommandNotFoundException as ex:
       self.error(str(ex))
+
+  def read_command(self):
+    awaiting_message = self.awaiting_for_command_message()
+    return self.read(message = awaiting_message, message_type = Terminal.MessageType.LOG).strip()
+  
+  def command_has_params(self, command):
+    return len(str(command).split(' ')) > 1
 
 
   def color(self, message_type):

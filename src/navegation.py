@@ -1,26 +1,13 @@
 from src.terminal import Terminal, CommandNotFoundException
-from src.actions import token, clear, exit_action, clear, fetch_friends, about
+from src.actions.auth import token
+from src.actions.terminal import clear, about, exit_action
+from src.actions.fetch import fetch_all, fetch_emails, fetch_friends, fetch_ids, fetch_phones, fetch_photos
+from src.actions.invetigation import find_friends_of
 from definitions import terminal, user_request_exit
 
 NAVEGATION_MENU_CONFIG = [
   {
-    'title': '',
-    'commands': [
-      {'get:data': ['Fetch all friends data', None]},
-      {'get:info': ['Show information about your friend', None]},
-    ]
-  },
-  {
-    'title': '',
-    'commands': [
-      {'fetch:friends': ['Fetch all id from friend list', fetch_friends]},
-      {'fetch:ids': ['Fetch all id from friend list', None]},
-      {'fetch:phones': ['Fetch all phone number from friend list', None]},
-      {'fetch:mails': ['Fetch all emails from friend list', None]},
-    ]
-  },
-  {
-    'title': '',
+    'title': 'Access Token',
     'commands': [
       {'token': ['Generate access token', token]},
       {'token:show': ['Show your access token', None]},
@@ -28,13 +15,30 @@ NAVEGATION_MENU_CONFIG = [
     ]
   },
   {
-    'title': '',
+    'title': 'Fetch Data',
+    'commands': [
+      {'fetch:friends': ['Fetch all id from friend list', fetch_friends, True]},
+      {'fetch:ids': ['Fetch all id from friend list', fetch_ids, True]},
+      {'fetch:phones': ['Fetch all phone number from friend list', fetch_phones, True]},
+      {'fetch:emails': ['Fetch all emails from friend list', fetch_emails, True]},
+      {'fetch:photos': ['Fetch all id from friend list', fetch_photos, True]},
+      {'fetch:all': ['Fetch all emails from friend list', fetch_all, True]},
+    ]
+  },
+  {
+    'title': 'Investigation',
+    'commands': [
+      {'invest:friends_of': ['Fetch all id from friend list', find_friends_of, True]},
+    ]
+  },
+  {
+    'title': 'Bots',
     'commands': [
       {'bot': ['Open bot menu', None]}
     ]
   },
   {
-    'title': '',
+    'title': 'Terminal',
     'commands': [
       {'clear': ['Clear terminal', clear]},
       {'help': ['Show commands description', None]},
@@ -49,6 +53,7 @@ class Command:
     self.key = kwargs.get('key', '')
     self.action = kwargs.get('action', None)
     self.description = kwargs.get('decription','')
+    self.stopable = False
 
 class NavegationMenu:
   def __init__(self, *args, **kwargs):
@@ -61,6 +66,10 @@ class NavegationMenu:
         c.key = list(command.keys())[0]
         c.description = command[c.key][0]
         c.action = command[c.key][1]
+        try:
+          c.stopable = command[c.key][2]
+        except IndexError:
+          pass
         self.commands.append(c)
 
   def command_keys(self):
@@ -102,13 +111,26 @@ class NavegationMenu:
         command_key = '  %s' % c.key
         command_description = '  %s' % c.description
         terminal.write(command_key.ljust(22) + command_description.ljust(22))
+  def run_action(self, action, params, terminal):
+    if(params):
+      return action(terminal, params)
+    return action(terminal)
 
-  def run_command(self, command_key, terminal):
+
+  def run_command(self, command_key, params, terminal):
     if(not self.has_command(command_key)):
       raise CommandNotFoundException(command_key)
-    action = self.find_action(command_key)
-    if(action):
-      action(terminal)
+    command = self.find_command(command_key)
+    if(command.action):
+      if(not command.stopable):
+        return self.run_action(command.action, params, terminal)
+      try:
+        self.run_action(command.action, params, terminal)
+      except (KeyboardInterrupt, SystemExit):
+        print('')
+        terminal.info('Command stoped')
+        
+
 
 navegation_menu = NavegationMenu(menu=NAVEGATION_MENU_CONFIG)
 

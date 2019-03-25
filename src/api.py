@@ -1,4 +1,4 @@
-import requests, json, hashlib, time, simplejson, urllib, base64
+import requests, json, hashlib, time, simplejson, urllib, base64, pprint
 from src.util import write_directory, delete_file, relative_path, join_path, write_photo
 from definitions import CONFIGURATION_DIR, COOKIES_DIR, OUTPUT_REQUESTS_DIR, terminal
 from src.terminal import Terminal
@@ -34,16 +34,23 @@ class Request:
 	def get(url):
 		response = requests.get(url)
 		text = response.text
-		file_name = join_path(OUTPUT_REQUESTS_DIR, 'get_request[%s].json' % time.time())
-		fr = open(file_name, 'w')
-		fr.write('{0}'.format(text))
-		fr.close()
+		# enable if you are going to examine the data that comes from requests
+		# Request.write_response(text)
 		try:
 			json_response = simplejson.loads(text, encoding='utf-8')
 			return json_response
 		except simplejson.errors.JSONDecodeError as ex:
 			terminal.write(str(ex))
 			return None
+	'''
+	Method used to examine the data that comes in any request
+	'''
+	@staticmethod
+	def write_response(text, sufix = ''):
+		file_name = join_path(OUTPUT_REQUESTS_DIR, '%sget_request[%s].json' % (sufix, time.time()))
+		fr = open(file_name, 'w')
+		fr.write('{0}'.format(text))
+		fr.close()
 class Facebook:
 	def login(self):
 		terminal.set_message_type(Terminal.MessageType.LOG)
@@ -98,18 +105,22 @@ class Facebook:
 	def get_profile_data(self, profile_id):
 		url = '%s/%s?access_token=%s' % (BASE_URL, profile_id, self.access_token())
 		profile = Request.get(url)
-		return profile['data']
+		pp = pprint.PrettyPrinter()
+		return profile
 	
 	def get_profile_of(self, profile_id):
 		url = '%s/%s/friends?access_token=%s' % (BASE_URL, profile_id, self.access_token())
 		profile = Request.get(url)
-		return profile['data']
+		return profile
 	
 	def get_profile_picture(self, profile_id):
 		url = '%s/%s/picture?access_token=%s&height=300' % (BASE_URL, profile_id, self.access_token())
-		contents = urllib.urlopen(url).read()
-		photo_data = base64.b64encode(contents)
-		picture = write_photo('%s.jpg' % profile_id, photo_data)
+		contents = None
+		try:
+			contents = urllib.urlopen(url).read()
+		except AttributeError:
+			contents = urllib.request.urlopen(url).read()
+		picture = write_photo('%s.jpg' % profile_id, contents)
 		return picture
 		
 	

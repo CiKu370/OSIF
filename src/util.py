@@ -15,11 +15,14 @@ def join_path(a, b):
   return os.path.join(a,b)
 
 def relative_path(absolute_path):
-  return absolute_path.replace(ROOT_DIR, "")
+  return absolute_path.replace(ROOT_DIR, "")[1:]
 
 def write_photo(file_name, data):
-  photo = open('%s/%s' % (PHOTOS_DIR, file_name), 'w')
-  photo.write(data)
+  photo = None
+  photo_path = '%s/%s' % (relative_path(PHOTOS_DIR), file_name)
+  with open(photo_path, 'wb') as photo:
+    photo.write(data)
+    photo.close()
   return photo
 
 def to_dict(obj, classkey=None):
