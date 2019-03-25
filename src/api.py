@@ -2,8 +2,10 @@ import requests, json, hashlib, time, simplejson, urllib, base64, pprint
 from src.util import write_directory, delete_file, relative_path, join_path, write_photo
 from definitions import CONFIGURATION_DIR, COOKIES_DIR, OUTPUT_REQUESTS_DIR, terminal
 from src.terminal import Terminal
+from progress.spinner import Spinner
+from facebook import GraphAPI as FacebookAPI
 
-BASE_URL = 'https://graph.facebook.com'
+BASE_URL = 'https://graph.facebook.com/v3.2'
 BASE_ME = BASE_URL + '/me'
 LOGIN_ENPOINT = 'https://api.facebook.com/restserver.php'
 
@@ -31,7 +33,7 @@ BASE_SIGNATURE = 'api_key={0}credentials_type=passwordemail={1}format=JSONgenera
 
 class Request:
 	@staticmethod
-	def get(url):
+	def get(url) -> dict:
 		response = requests.get(url)
 		text = response.text
 		# enable if you are going to examine the data that comes from requests
@@ -97,20 +99,14 @@ class Facebook:
 		return open(PATH_COOKIE_ACCESS_TOKEN, 'r').read()
 	
 	def get_friends(self):
-		url = '%s/friends?access_token=%s' % (BASE_ME, self.access_token())
-		json_response = Request.get(url)
-		friends = json_response['data']
+		fb = FacebookAPI(access_token=self.access_token(), version='3.2')
+		response = fb.get_connections(id='me', connection_name='friends')
+		friends = self.fetch_paginated(response)
 		return friends
 	
 	def get_profile_data(self, profile_id):
-		url = '%s/%s?access_token=%s' % (BASE_URL, profile_id, self.access_token())
-		profile = Request.get(url)
-		pp = pprint.PrettyPrinter()
-		return profile
-	
-	def get_profile_of(self, profile_id):
-		url = '%s/%s/friends?access_token=%s' % (BASE_URL, profile_id, self.access_token())
-		profile = Request.get(url)
+		fb = FacebookAPI(access_token=self.access_token(), version='3.2')
+		profile = fb.request(profile_id)
 		return profile
 	
 	def get_profile_picture(self, profile_id):
@@ -122,5 +118,27 @@ class Facebook:
 			contents = urllib.request.urlopen(url).read()
 		picture = write_photo('%s.jpg' % profile_id, contents)
 		return picture
+	
+	def get_friends_of(self, profile_id: str):
+		url = '%s/%s/friends?access_token=%s' % (BASE_URL, profile_id, self.access_token())
+		friends = self.fetch_paginated(url)
+		return friends
+	
+	def fetch_paginated(self, json_response: dict, getter: str = 'data') -> list:
+		objects = []
+		loading_bar = Spinner('Getting data from %s' % BASE_URL)
+		url = None
+		while True:
+			objects = objects + json_response[getter]
+			loading_bar.next()
+
+			paging = json_response['paging']
+			next_page = paging.get('next', None)
+			if not next_page:
+				break
+			url = next_page
+			json_response = Request.get(url)
+		return objects
+			
 		
 	

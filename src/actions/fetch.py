@@ -128,7 +128,7 @@ def fetch_all(terminal):
     friends = facebook_api.get_friends()
   except IOError as ex:
     token_not_generated(terminal, ex)
-  with open('%s/friend_mails.csv' % OUTPUT_CSVS_DIR, 'w') as f:
+  with open('%s/friend_all.csv' % OUTPUT_CSVS_DIR, 'w') as f:
     fieldnames = ['id', 'username', 'name', 'email', 'phone', 'picture']
     writer = csv.DictWriter(f, fieldnames=fieldnames)
     writer.writeheader()
@@ -136,6 +136,7 @@ def fetch_all(terminal):
     for friend in friends:
       friend_data = facebook_api.get_profile_data(friend['id'])
       picture = facebook_api.get_profile_picture(friend['id'])
+      email = phone = username = None
       try:
         email = friend_data['email']
         phone = friend_data['mobile_phone']

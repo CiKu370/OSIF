@@ -7,7 +7,6 @@ LOGO_WIDTH = 46
 
 def separate_params(param):
   param = str(param)
-  print(param)
   key_value = param.split('=')
   key = str(key_value[0]).replace('-', '', 1)
   try:
@@ -63,7 +62,7 @@ class Terminal:
     else:
       try:
         raw = raw_input(message_text)
-      except:
+      except NameError:
         raw = input(message_text)
     return '{0}'.format(raw).strip()
   
@@ -113,15 +112,17 @@ class Terminal:
   def awaiting_for_command_message(self):
     return '%sosif %s>> ' % (Terminal.Color.RED, Terminal.Color.WHITE)
   
-  
-  
   def run_command(self, navegation_menu):
-    command_text = self.read_command()
+    while True:
+      command_raw = self.read_command()
+      command_instruction = command_raw.split(" ")[0]
+      if(command_instruction):
+        break
     params = None
-    if(self.command_has_params(command_text)):
-      params = dict(map(separate_params, command_text.split(' ')[1:]))
+    if(self.command_has_params(command_raw)):
+      params = dict(map(separate_params, command_raw.split(' ')[1:]))
     try:
-      navegation_menu.run_command(command_text, params, self)
+      navegation_menu.run_command(command_instruction, params, self)
     except CommandNotFoundException as ex:
       self.error(str(ex))
 

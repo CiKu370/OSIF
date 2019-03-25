@@ -7,11 +7,9 @@ from definitions import terminal, user_request_exit
 
 NAVEGATION_MENU_CONFIG = [
   {
-    'title': 'Access Token',
+    'title': 'Auth',
     'commands': [
-      {'token': ['Generate access token', token]},
-      {'token:show': ['Show your access token', None]},
-      {'token:rm': ['Show your access token', None]},
+      {'auth:facebook': ['Login in Facebook', token]},
     ]
   },
   {
@@ -111,13 +109,15 @@ class NavegationMenu:
         command_key = '  %s' % c.key
         command_description = '  %s' % c.description
         terminal.write(command_key.ljust(22) + command_description.ljust(22))
+
   def run_action(self, action, params, terminal):
     if(params):
       return action(terminal, params)
-    return action(terminal)
+    else:
+      return action(terminal)
 
 
-  def run_command(self, command_key, params, terminal):
+  def run_command(self, command_key: str, params: dict, terminal: Terminal):
     if(not self.has_command(command_key)):
       raise CommandNotFoundException(command_key)
     command = self.find_command(command_key)
