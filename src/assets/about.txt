@@ -1,0 +1,31 @@
+                      REMAKE PROJECT
+ ------------------------------------------------------
+
+    Author     Christian Camacho 'ricexen'
+    Name       OSSI 'Open Source Social Information'
+    CodeName   ricexen
+    version    v1.0
+    Date       24/04/2018 23:23
+    Twitter    @ricexen
+    Instagram  _ricexen
+
+                      ORIGINAL PROJECT
+ ------------------------------------------------------
+
+    Author     Debby Anggraini 'CiKu370'
+    Name       OSIF 'Open Source Information Facebook'
+    CodeName   D3b2y
+    version    full version
+    Date       16/05/2018 09:35:12
+    Team       Blackhole Security
+    Email      xnver404@gmail.com
+    Telegram   @CiKu370
+
+                      ART
+ ------------------------------------------------------
+
+    ASCII Art  https://www.asciiart.eu/animals/aardvarks
+    Artist     Veronica Karlsson
+
+* if you find any errors or problems , please contact
+  author
