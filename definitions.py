@@ -6,8 +6,9 @@ user_request_exit = False
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 OUTPUT_DIR = join_path(ROOT_DIR, 'output')
-OUTPUT_REQUESTS_DIR = join_path(ROOT_DIR, 'output/requests')
-OUTPUT_CSVS_DIR = join_path(ROOT_DIR, 'output/csv')
+OUTPUT_REQUESTS_DIR = join_path(OUTPUT_DIR, 'requests')
+OUTPUT_CSVS_DIR = join_path(OUTPUT_DIR, 'csv')
+OUTPUT_CSVS_FRIENDS_DIR = join_path(OUTPUT_CSVS_DIR, 'friends')
 OUTPUT_PHOTOS_DIR = join_path(ROOT_DIR, 'output/photos')
 OUTPUT_FRIENDS = join_path(OUTPUT_CSVS_DIR, 'friends')
 COOKIES_DIR = join_path(ROOT_DIR, 'cookie')
@@ -21,6 +22,7 @@ def define_directories():
     CONFIGURATION_DIR, 
     OUTPUT_REQUESTS_DIR, 
     OUTPUT_CSVS_DIR,
+    OUTPUT_CSVS_FRIENDS_DIR,
     OUTPUT_PHOTOS_DIR
   ]
   for dir_path in DIRS:

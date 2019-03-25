@@ -8,7 +8,7 @@ OUTPUT_CSVS_DIR = os.path.join(ROOT_DIR, 'output/csv')
 def write_directory(path):
   try:
     os.makedirs(path)
-  except OSError:
+  except FileExistsError as ex:
     pass
 def delete_file(path):
   os.remove(path)
@@ -64,3 +64,4 @@ def save_list_of_dicts(file_name: str, l: list, fields: list):
       progress_bar.next()
     f.close()
   print()
+  return f

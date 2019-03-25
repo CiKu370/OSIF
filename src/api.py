@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import requests, json, hashlib, time, simplejson, urllib, base64, pprint
 from src.util import write_directory, delete_file, relative_path, join_path, write_photo
 from definitions import CONFIGURATION_DIR, COOKIES_DIR, OUTPUT_REQUESTS_DIR, terminal
@@ -64,8 +65,8 @@ class Facebook:
 		self.data['password'] = self.pwd
 		sig = BASE_SIGNATURE.format(API_KEY, self.id, self.pwd, API_SECRET)
 		md5_hash = hashlib.new('md5')
-		md5_hash.update(sig)
-		self.data.update({'sig': md5_hash.hexdigest()})
+		md5_hash.update(sig.encode('utf-8'))
+		self.data['sig'] = md5_hash.hexdigest()
 
 	def write_access_token(self):
 		terminal.write('[*] Generate access token ')
@@ -119,9 +120,14 @@ class Facebook:
 		picture = write_photo('%s.jpg' % profile_id, contents)
 		return picture
 	
+	def get_username(self, profile_id: str)-> str:
+		friend = self.get_profile_data(profile_id)
+		return friend.get('username', None)
+	
 	def get_friends_of(self, profile_id: str):
 		fb = FacebookAPI(access_token=self.access_token(), version='3.2')
-		response = fb.get_connections(profile_id, connection_name='friends')
+		username = self.get_username(profile_id)
+		response = fb.get_connections(username, connection_name='friends')
 		friends = self.fetch_paginated(response)
 		return friends
 	

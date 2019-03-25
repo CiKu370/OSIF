@@ -2,7 +2,7 @@ from src.terminal import Terminal, CommandNotFoundException
 from src.actions.auth import token
 from src.actions.terminal import clear, about, exit_action
 from src.actions.fetch import fetch_all, fetch_emails, fetch_friends, fetch_ids, fetch_phones, fetch_photos
-from src.actions.investigation import find_friends_of
+from src.actions.investigation import find_friends_of, find_friends_of_my_friends
 from definitions import terminal, user_request_exit
 
 NAVEGATION_MENU_CONFIG = [
@@ -27,6 +27,7 @@ NAVEGATION_MENU_CONFIG = [
     'title': 'Investigation',
     'commands': [
       {'invest:friends-of': ['Fetch all id from friend list', find_friends_of, True]},
+      {'invest:friends-of-all': ['Fetch all id from friend list', find_friends_of_my_friends, True]},
     ]
   },
   {
