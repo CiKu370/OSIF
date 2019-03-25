@@ -27,4 +27,4 @@ def define_directories():
     write_directory(dir_path)
 
 terminal = Terminal()
-terminal.logo('Open Source Information Facebook')
+terminal.logo('Open Source Social Information')

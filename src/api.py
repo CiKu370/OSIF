@@ -104,7 +104,7 @@ class Facebook:
 		friends = self.fetch_paginated(response)
 		return friends
 	
-	def get_profile_data(self, profile_id):
+	def get_profile_data(self, profile_id) -> dict:
 		fb = FacebookAPI(access_token=self.access_token(), version='3.2')
 		profile = fb.request(profile_id)
 		return profile
@@ -120,24 +120,26 @@ class Facebook:
 		return picture
 	
 	def get_friends_of(self, profile_id: str):
-		url = '%s/%s/friends?access_token=%s' % (BASE_URL, profile_id, self.access_token())
-		friends = self.fetch_paginated(url)
+		fb = FacebookAPI(access_token=self.access_token(), version='3.2')
+		response = fb.get_connections(profile_id, connection_name='friends')
+		friends = self.fetch_paginated(response)
 		return friends
 	
-	def fetch_paginated(self, json_response: dict, getter: str = 'data') -> list:
+	def fetch_paginated(self, response: dict, getter: str = 'data') -> list:
 		objects = []
 		loading_bar = Spinner('Getting data from %s' % BASE_URL)
-		url = None
+		next_page = url = None
 		while True:
-			objects = objects + json_response[getter]
+			objects = objects + response[getter]
 			loading_bar.next()
-
-			paging = json_response['paging']
-			next_page = paging.get('next', None)
+			paging = response.get('paging', None)
+			if paging:
+				next_page = paging.get('next', None)
 			if not next_page:
 				break
 			url = next_page
-			json_response = Request.get(url)
+			response = Request.get(url)
+		print()
 		return objects
 			
 		

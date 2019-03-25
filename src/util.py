@@ -1,7 +1,9 @@
-import os
+import os, csv
+from progress.bar import Bar as ProgressBar
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 PHOTOS_DIR = os.path.join(ROOT_DIR, 'output/photos')
+OUTPUT_CSVS_DIR = os.path.join(ROOT_DIR, 'output/csv')
 
 def write_directory(path):
   try:
@@ -44,3 +46,21 @@ def to_dict(obj, classkey=None):
     return data
   else:
       return obj
+
+def save_list_of_dicts(file_name: str, l: list, fields: list):
+  with open(file_name, 'w') as f:
+    writer = csv.DictWriter(f, fieldnames=fields)
+    writer.writeheader()
+    progress_bar = ProgressBar('Saving %s' % relative_path(file_name), max=len(l))
+    for el in l:
+      row = {}
+      for field in fields:
+        try:
+          row[field] = el[field]
+        except KeyError as ex:
+          raise ex
+      if row.keys():
+        writer.writerow(row)
+      progress_bar.next()
+    f.close()
+  print()
