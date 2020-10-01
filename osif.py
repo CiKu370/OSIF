@@ -3,7 +3,7 @@
 import json , sys , hashlib , os , time , marshal, getpass
 ###################################################################
 '''
-     Jangan Direcode ya bosku , tinggal make apa susahnya sih
+     Jangan Direcode ya bosku :) , tinggal make apa susahnya sih
 '''
 ###################################################################
 #                             COLOR
@@ -523,7 +523,7 @@ def menu_reaction_ask():
 		except IOError:
 			pass
 
-		print '\n' + '[*] Generate Access token facebook [*]'.center(44) + '\n'
+		print '\n' + '[*] Generating Access token facebook [*]'.center(44) + '\n'
 		print '[Warn] please turn off your VPN before using this feature !!!'
 		id()
 	elif cek in ['0','00']:
